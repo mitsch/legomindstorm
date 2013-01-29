@@ -29,7 +29,7 @@ public class Main {
 		
 		//do {
 			Random rnd = new Random();
-			/*for (int i=0; i<200; i++) {
+			for (int i=0; i<200; i++) {
 				//pick a field
 				int x = rnd.nextInt(200);
 				int y = rnd.nextInt(200);
@@ -38,12 +38,12 @@ public class Main {
 				int e = rnd.nextInt(elements.length);
 
 				map.setField(new Point(x,y), elements[e]);
-			}*/
-			for (int x=0; x<200; x++) {
+			}
+			/*for (int x=0; x<200; x++) {
 				for (int y=0; y<200; y++) {
 					map.setField(new Point(x,y), LabyrinthMap.Element.FREE);
 				}
-			}
+			}*/
 			
 			map.print();
 

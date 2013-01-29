@@ -3,7 +3,6 @@ package labyrinth;
 import lejos.geom.Point;
 import lejos.robotics.navigation.Waypoint;
 import lejos.robotics.pathfinding.Path;
-import java.util.HashSet;
 import java.lang.Math;
 
 public class LabyrinthMap {
@@ -90,8 +89,8 @@ public class LabyrinthMap {
 	}
 	
 	private Point arrayXYToPoint(Coordinate coord) {
-		return new Point( (coord.x - pad) * dX + bottomLeft.x,
-				(coord.y - pad) * dY + bottomLeft.y);
+		return new Point( (coord.x - pad) * dX + bottomLeft.x + dX/2,
+				(coord.y - pad) * dY + bottomLeft.y + dY/2);
 	}
 	
 	private Element[][] obstacleMap() {
@@ -116,8 +115,8 @@ public class LabyrinthMap {
 		//find a way through the obstacles using A*
 		Coordinate target = this.pointToArrayXY(to);
 		Coordinate start = this.pointToArrayXY(from);
-		HashSet<Coordinate> closedSet = new HashSet<Coordinate>();
-		PriorityQueue openSet = new PriorityQueue(3*target.distance(start));
+		PriorityQueue closedSet = new PriorityQueue(target.distance(start));
+		PriorityQueue openSet = new PriorityQueue(target.distance(start));
 		openSet.add(start);
 		start.key = start.distance(target);
 		g_score[start.x][start.y] = 0; 
@@ -139,37 +138,37 @@ public class LabyrinthMap {
 							current.y + dy);
 					
 					//check if we are beyond the map
-					if (0<=neighbor.x && neighbor.x < newMap.length
-							&& 0<=neighbor.y && neighbor.y < newMap[0].length)
+					if (0>neighbor.x || neighbor.x >= newMap.length
+							|| 0>neighbor.y || neighbor.y >= newMap[0].length)
 						continue;
 					
 					//we ignore obstacles and already checked fields
-					if (!closedSet.contains(neighbor)
-							&& newMap[neighbor.x][neighbor.y] != Element.OBSTACLE) {
+					if (closedSet.containsNaive(neighbor)
+							|| newMap[neighbor.x][neighbor.y] == Element.OBSTACLE)
+						continue;
 						
-						//calculate the cost from start to neighbor
-						int transitionCost;
-						switch (newMap[neighbor.x][neighbor.y]) {
-						case UNKNOWN:
-							transitionCost = 2;
-							break;
-						case ROBOT:
-							transitionCost = 4;
-							break;
-						default:
-							transitionCost = 1;
-							break;
-						}
-						int cost = g_score[current.x][current.y] + transitionCost;
-						
-						if (!openSet.contains(neighbor)
-								|| cost <= g_score[neighbor.x][neighbor.y]) {
-							cameFrom[neighbor.x][neighbor.y] = current;
-							g_score[neighbor.x][neighbor.y] = cost;
-							neighbor.key = cost + neighbor.distance(target); 
-							if (!openSet.contains(neighbor))
-								openSet.add(neighbor);
-						}
+					//calculate the cost from start to neighbor
+					int transitionCost;
+					switch (newMap[neighbor.x][neighbor.y]) {
+					case UNKNOWN:
+						transitionCost = 2;
+						break;
+					case ROBOT:
+						transitionCost = 4;
+						break;
+					default:
+						transitionCost = 1;
+						break;
+					}
+					int cost = g_score[current.x][current.y] + transitionCost;
+					
+					if (!openSet.containsNaive(neighbor)
+							|| cost <= g_score[neighbor.x][neighbor.y]) {
+						cameFrom[neighbor.x][neighbor.y] = current;
+						g_score[neighbor.x][neighbor.y] = cost;
+						neighbor.key = cost + neighbor.distance(target); 
+						if (!openSet.contains(neighbor))
+							openSet.add(neighbor);
 					}
 				}
 			}

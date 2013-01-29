@@ -52,6 +52,14 @@ public class PriorityQueue {
 		return false;
 	}
 	
+	public boolean containsNaive(Coordinate coord) {
+		for (int i=0; i<queue.size(); i++) {
+			if (queue.get(i).equals(coord))
+				return true;
+		}
+		return false;
+	}
+	
 	public Coordinate popMin() {
 		Coordinate result = queue.get(0);
 		queue.remove(0);

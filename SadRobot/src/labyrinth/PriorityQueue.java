@@ -61,4 +61,12 @@ public class PriorityQueue {
 	public boolean isEmpty() {
 		return queue.isEmpty();
 	}
+	
+	public boolean containsNaive(Coordinate coord) {
+		for (int i=0; i<queue.size(); i++) {
+			if (queue.get(i).equals(coord))
+				return true;
+		}
+		return false;
+	}	
 }

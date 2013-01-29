@@ -3,7 +3,6 @@
 import lejos.geom.Point;
 import lejos.robotics.navigation.Waypoint;
 import lejos.robotics.pathfinding.Path;
-import java.util.HashSet;
 import java.lang.Math;
 
 public class LabyrinthMap {
@@ -90,8 +89,8 @@ public class LabyrinthMap {
 	}
 	
 	private Point arrayXYToPoint(Coordinate coord) {
-		return new Point( (coord.x - pad) * dX + bottomLeft.x,
-				(coord.y - pad) * dY + bottomLeft.y);
+		return new Point( (coord.x - pad) * dX + bottomLeft.x + dX/2,
+				(coord.y - pad) * dY + bottomLeft.y + dY/2);
 	}
 	
 	private Element[][] obstacleMap() {
@@ -116,7 +115,7 @@ public class LabyrinthMap {
 		//find a way through the obstacles using A*
 		Coordinate target = this.pointToArrayXY(to);
 		Coordinate start = this.pointToArrayXY(from);
-		HashSet<Coordinate> closedSet = new HashSet<Coordinate>();
+		PriorityQueue closedSet = new PriorityQueue(3*target.distance(start));
 		PriorityQueue openSet = new PriorityQueue(3*target.distance(start));
 		openSet.add(start);
 		start.key = start.distance(target);
@@ -144,7 +143,7 @@ public class LabyrinthMap {
 						continue;
 					
 					//we ignore obstacles and already checked fields
-					if (!closedSet.contains(neighbor)
+					if (!closedSet.containsNaive(neighbor)
 							&& newMap[neighbor.x][neighbor.y] != Element.OBSTACLE) {
 						
 						//calculate the cost from start to neighbor
@@ -162,7 +161,7 @@ public class LabyrinthMap {
 						}
 						int cost = g_score[current.x][current.y] + transitionCost;
 						
-						if (!openSet.contains(neighbor)
+						if (!openSet.containsNaive(neighbor)
 								|| cost <= g_score[neighbor.x][neighbor.y]) {
 							cameFrom[neighbor.x][neighbor.y] = current;
 							g_score[neighbor.x][neighbor.y] = cost;
@@ -180,6 +179,7 @@ public class LabyrinthMap {
 	}
 	
 	private Path reconstructPath(Coordinate start, Coordinate target) {
+		printMap(cameFrom);
 		Path path = new Path();
 		Coordinate previousDirection = new Coordinate(0,0);
 		Coordinate currentDirection = null;
@@ -210,9 +210,25 @@ public class LabyrinthMap {
 	}
 	
 	public void print() {
-		for (int y=0; y<labyrinthMap[0].length; y++) {
-			for (int x=0; x<labyrinthMap.length; x++) {
-				switch (labyrinthMap[x][y]) {
+		printMap(labyrinthMap);
+	}
+	
+	private void printMap(Coordinate[][] map) {
+		for (int y=0; y<map[0].length; y++) {
+			for (int x=0; x<map.length; x++) {
+				if (map[x][y] == null)
+					System.out.print("NULL!");
+				else
+					map[x][y].print();
+			}
+			System.out.println();
+		}
+	}
+	
+	private void printMap(Element[][] map) {
+		for (int y=0; y<map[0].length; y++) {
+			for (int x=0; x<map.length; x++) {
+				switch (map[x][y]) {
 				case FREE:
 					System.out.print(" ");
 					break;
@@ -224,7 +240,7 @@ public class LabyrinthMap {
 					break;
 				}
 			}
-			System.out.println("\n");
+			System.out.println("");
 		}
 	}
 }

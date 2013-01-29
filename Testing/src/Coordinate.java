@@ -25,4 +25,8 @@ public class Coordinate {
 	public Coordinate direction(Coordinate to) {
 		return new Coordinate(to.x - x, to.y - y);
 	}
+	
+	public void print() {
+		System.out.print("(" + x + "," + y + ")");
+	}
 }

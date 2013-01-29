@@ -1,0 +1,27 @@
+	LabyrinthMap map = new LabyrinthMap(new Point(0,0), new Point(100, 100), 10, 10);
+		
+		LabyrinthMap.Element[]  elements = {LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.FREE,
+				LabyrinthMap.Element.OBSTACLE,
+				LabyrinthMap.Element.ROBOT};
+	
+		Random rnd = new Random();
+		for (int i=0; i<200; i++) {
+			//pick a field
+			int x = rnd.nextInt(200);
+			int y = rnd.nextInt(200);
+			
+			//pick an Element
+			int e = rnd.nextInt(elements.length);
+			
+			map.setField(new Point(x,y), elements[e]);
+		}	
+		
+		map.print();
+		
+		Path path = map.calculatePath(new Point(0,0), new Point(100,100));

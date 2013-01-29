@@ -26,20 +26,20 @@ public class Robot {
 	private Point ultraSonicPosition;
 	
 	public Robot() {
-		leftMotor = Motor.C;
+		leftMotor = Motor.A;
 		rightMotor = Motor.C;
-		joker = Motor.A;
+		joker = Motor.B;
 		
 		leftTouch = new TouchSensor(SensorPort.S1);
 		rightTouch = new TouchSensor(SensorPort.S4);
 		sonar = new UltrasonicSensor(SensorPort.S3);
 		light = new LightSensor(SensorPort.S2);
 		
-		pilot = new DifferentialPilot(2.8f, 11.1f, leftMotor,
+		pilot = new DifferentialPilot(2.25f, 5.5f, leftMotor,
 				rightMotor);
 		navigator = new Navigator(pilot);
 		
-		ultraSonicPosition = new Point(0, 0);
+		ultraSonicPosition = new Point(10, 10);
 	}
 	
 	public Pose getPose() {

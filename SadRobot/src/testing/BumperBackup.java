@@ -1,6 +1,5 @@
 package testing;
 
-import labyrinth.MainControl;
 import lejos.nxt.TouchSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
@@ -24,13 +23,13 @@ public class BumperBackup implements Behavior {
 	@Override
 	public void action() {
 		boolean leftIsPressed = touchLeft.isPressed();
-		pilot.travel(-10 * MainControl.cm);	
+		pilot.travel(-10);	
 		if (leftIsPressed) {
 			pilot.rotate(-30, true);
 		} else {
 			pilot.rotate(30, true);	
 		}	
-		pilot.travel(10 * MainControl.cm);
+		pilot.travel(10);
 	}
 
 	@Override

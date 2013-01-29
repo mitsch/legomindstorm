@@ -15,7 +15,7 @@ public class FindLine implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return !robot.isGroundSilver();
+		return !robot.isLineBeneath();
 	}
 
 	@Override
@@ -25,9 +25,9 @@ public class FindLine implements Behavior {
 		//find line by rotating a bit to the right and left
 		int turn = 10;
 		short sign = -1;
-		while (!suppressed && !robot.isGroundSilver()) {
+		while (!suppressed && !robot.isLineBeneath()) {
 			robot.pilot.rotate(sign * turn, true);
-			while (!suppressed && !robot.isGroundSilver() && robot.pilot.isMoving());	
+			while (!suppressed && !robot.isLineBeneath() && robot.pilot.isMoving());	
 			robot.pilot.stop();
 			
 			turn *= 2;

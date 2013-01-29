@@ -1,6 +1,5 @@
 package labyrinth;
 
-import lejos.robotics.navigation.Pose;
 import lejos.geom.Point;
 import common.Robot;
 
@@ -18,17 +17,10 @@ public class UltraSonicScanner extends Thread {
 		while (!LabyrinthSolver.solved) {
 			try {
 				//distance in cm
-				int distance = robot.sonar.getDistance();
+				Point obstaclePosition = robot.useSonar();
 				
-				if (distance != 255) {
-					//calculate the coordinates of the obstacle we detected
-					Pose robotPose = robot.getPose();
-					
-					Point sensorPosition = robot.getUltraSonicPosition();
-					Point obstaclePosition = sensorPosition.pointAt(distance,
-							robotPose.getHeading());
-					
-					map.setObstacleAt(obstaclePosition, sensorPosition);
+				if (obstaclePosition != null) {	
+					map.setObstacleAt(obstaclePosition, robot.getPose().getLocation());
 				}
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

@@ -12,7 +12,7 @@ public class RecognizeLine implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return !LabyrinthSolver.solved && robot.isGroundSilver();
+		return !LabyrinthSolver.solved && robot.isLineBeneath();
 	}
 
 	@Override

@@ -50,7 +50,17 @@ public class Robot {
 		return this.getPose().getLocation().add(ultraSonicPosition);
 	}
 	
-	public boolean isGroundSilver() {
-		return light.readNormalizedValue() > 50;
+	public boolean isLineBeneath() {
+		return light.readNormalizedValue() > 600;
+	}
+	
+	public Point useSonar() {	
+		int distance = sonar.getDistance();
+		if (distance != 255) {
+			Pose robotPose = navigator.getPoseProvider().getPose();
+			return ultraSonicPosition.pointAt(distance,
+					robotPose.getHeading());
+		} else
+			return null;
 	}
 }

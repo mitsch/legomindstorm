@@ -15,7 +15,7 @@ public class FollowLine implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return robot.isGroundSilver();
+		return robot.isLineBeneath();
 	}
 
 	@Override
@@ -23,7 +23,8 @@ public class FollowLine implements Behavior {
 		suppressed = false;
 		
 		robot.pilot.steer(LineFollower.lineCurvature);
-		while (!suppressed && robot.isGroundSilver());
+		while (!suppressed && robot.isLineBeneath());
+		robot.pilot.stop();
 	}
 
 	@Override

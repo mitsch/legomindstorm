@@ -27,15 +27,17 @@ public class Robot {
 	
 	public Robot() {
 		leftMotor = Motor.A;
-		rightMotor = Motor.C;
-		joker = Motor.B;
+		rightMotor = Motor.B;
+		joker = Motor.C;
+		joker.setSpeed(30);
 		
 		leftTouch = new TouchSensor(SensorPort.S1);
 		rightTouch = new TouchSensor(SensorPort.S4);
 		sonar = new UltrasonicSensor(SensorPort.S3);
+		sonar.setMode(UltrasonicSensor.MODE_PING);
 		light = new LightSensor(SensorPort.S2);
 		
-		pilot = new DifferentialPilot(2.25f, 5.5f, leftMotor,
+		pilot = new DifferentialPilot(3.3f, 22.0f, leftMotor,
 				rightMotor);
 		navigator = new Navigator(pilot);
 		
@@ -51,7 +53,7 @@ public class Robot {
 	}
 	
 	public boolean isLineBeneath() {
-		return light.readNormalizedValue() > 600;
+		return light.readValue() > 50;
 	}
 	
 	public Point useSonar() {	
@@ -62,5 +64,31 @@ public class Robot {
 					robotPose.getHeading());
 		} else
 			return null;
+	}
+	
+	public void alignLight() {
+		joker.rotateTo(0);
+	}
+	
+	/**
+	 * Tries to get a good reading of the environment. Afterwards, the light
+	 * sensor is calibrated according to the darkest/brightest reading.
+	 * The sensor will be in front of the robot.
+	 */
+	public void calibrateLight() {
+		alignLight();
+		int max = 0;
+		int min = 1024;
+		joker.rotateTo(140, true);
+		while (joker.isMoving()) {
+			int measurement = light.readNormalizedValue();
+			if (measurement > max)
+				max = measurement;
+			if (measurement < min)
+				min = measurement;
+		}
+		light.setHigh(max);
+		light.setLow(min);
+		joker.rotateTo(70);
 	}
 }

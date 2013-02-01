@@ -8,22 +8,21 @@ import lejos.robotics.subsumption.Behavior;
 public class LabyrinthSolver {
 	
 	public static boolean solved = false;
-	private LabyrinthMap labyrinth;
 	private Arbitrator labyrinthSolver;
 	private UltraSonicScanner scanner;
 	
-	public LabyrinthSolver(Robot robot) {
+	public LabyrinthSolver(Robot robot, LabyrinthMap labyrinth, Point target) {
 		//Prepare labyrinth map
-		labyrinth = new LabyrinthMap(new Point(0,0), new Point(200, 200));
 		
 		scanner = new UltraSonicScanner(robot, labyrinth);
 		
 		//Prepare behaviors
+		Behavior scanMap = new MapByScan(robot);
 		MapByBump bumpMap = new MapByBump(robot, labyrinth);
 		RecognizeLine lineRec = new RecognizeLine(robot);
-		FindPath pathFind = new FindPath(robot, labyrinth);
+		FindPath pathFind = new FindPath(robot, labyrinth, target);
 		
-		Behavior[] behaviors = {pathFind, bumpMap, lineRec};
+		Behavior[] behaviors = {scanMap, pathFind, bumpMap};
 		
 		//Load the behaviors into an arbitrator
 		labyrinthSolver = new Arbitrator(behaviors, true);

@@ -33,7 +33,7 @@ public class Robot {
 		leftTouch = new TouchSensor(SensorPort.S4);
 		rightTouch = new TouchSensor(SensorPort.S1);
 		sonar = new UltrasonicSensor(SensorPort.S3);
-		sonar.setMode(UltrasonicSensor.MODE_PING);
+		//sonar.setMode(UltrasonicSensor.MODE_PING);
 		light = new LightSensor(SensorPort.S2);
 		
 		pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor,

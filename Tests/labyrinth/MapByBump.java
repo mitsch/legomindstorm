@@ -37,7 +37,7 @@ public class MapByBump implements Behavior {
 			angleOffset = -20;
 		
 		Pose pose = robot.getPose();
-		Point touchPoint = pose.getLocation().pointAt(20, pose.getHeading()
+		Point touchPoint = pose.getLocation().pointAt(10, pose.getHeading()
 				+ angleOffset);
 		
 		//save the obstacle in the labyrinth map

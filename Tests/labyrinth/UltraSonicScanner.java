@@ -15,16 +15,15 @@ public class UltraSonicScanner extends Thread {
 	@Override
 	public void run() {
 		while (!LabyrinthSolver.solved) {
-			try {
-				//distance in cm
-				Point obstaclePosition = robot.useSonar();
-				
-				if (obstaclePosition != null) {	
-					map.setObstacleAt(obstaclePosition, robot.getPose().getLocation());
-				}
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
+			//distance in cm
+			Point obstaclePosition = robot.useSonar();
+			
+			if (obstaclePosition != null)	
+				map.setObstacleAt(obstaclePosition, robot.getPose().getLocation());
+			else
+				map.setFree(robot.getPose().getLocation(),
+						robot.getPose().getLocation().pointAt(50,
+								robot.getPose().getHeading()));
 		}
 	}
 }

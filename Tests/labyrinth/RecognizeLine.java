@@ -1,5 +1,6 @@
 package labyrinth;
 
+import lejos.nxt.Sound;
 import lejos.robotics.subsumption.Behavior;
 import common.Robot;
 
@@ -18,6 +19,7 @@ public class RecognizeLine implements Behavior {
 	@Override
 	public void action() {
 		LabyrinthSolver.solved = true;
+		Sound.beepSequenceUp();
 
 	}
 

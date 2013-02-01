@@ -13,16 +13,17 @@ public class FindPath implements Behavior {
 	private Path path;
 	private boolean suppressed = false;
 
-	public FindPath(Robot robot, LabyrinthMap labyrinth) {
+	public FindPath(Robot robot, LabyrinthMap labyrinth, Point target) {
 		this.robot = robot;
 		this.labyrinth = labyrinth;
-		this.target = new Point(0, 100);
+		this.target = target;
 		this.path = null;
 	}
 
 	@Override
 	public boolean takeControl() {		
-		return !LabyrinthSolver.solved;
+		return !LabyrinthSolver.solved
+				&& labyrinth.getField(robot.getPose().getLocation()) == LabyrinthMap.Element.FREE;
 	}
 
 	@Override

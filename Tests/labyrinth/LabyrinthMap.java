@@ -62,24 +62,29 @@ public class LabyrinthMap {
 	}
 	
 	public void setObstacleAt(Point obstacle, Point sensor) {
-		Coordinate obstacleCoord = this.pointToArrayXY(obstacle);
 		Coordinate currentCoord = this.pointToArrayXY(sensor);
 		
+		setFree(sensor, obstacle);	
+		setCoordinate(currentCoord, Element.OBSTACLE);
+	}
+	
+	public void setFree(Point location, Point target) {
+		Coordinate currentCoord = this.pointToArrayXY(location);
+		Coordinate targetCoord = this.pointToArrayXY(target);
+		
 		//use a simplified Brasenham to paint the fields along the line as FREE
-		int dx =  Math.abs(obstacleCoord.x - currentCoord.x);
-		int dy = -Math.abs(obstacleCoord.y - currentCoord.y);
-		int sx = (currentCoord.x < obstacleCoord.x) ? 1 : -1;
-		int sy = (currentCoord.y < obstacleCoord.x) ? 1 : -1; 
+		int dx =  Math.abs(targetCoord.x - currentCoord.x);
+		int dy = -Math.abs(targetCoord.y - currentCoord.y);
+		int sx = (currentCoord.x < targetCoord.x) ? 1 : -1;
+		int sy = (currentCoord.y < targetCoord.x) ? 1 : -1; 
 		int err = dx+dy, e2; /* error value e_xy */
 
-		while (!currentCoord.equals(obstacleCoord)) {
+		while (!currentCoord.equals(target)) {
 			setCoordinate(currentCoord, Element.FREE);
 			e2 = 2*err;
 			if (e2 > dy) { err += dy; currentCoord.x += sx; }
 			if (e2 < dx) { err += dx; currentCoord.y += sy; }
 		}	
-		
-		setCoordinate(currentCoord, Element.OBSTACLE);
 	}
 	
 	private Coordinate pointToArrayXY(Point p) {	
@@ -206,5 +211,10 @@ public class LabyrinthMap {
 			}
 		}
 		return false;
+	}
+
+	public Element getField(Point location) {
+		Coordinate coord = this.pointToArrayXY(location);
+		return labyrinthMap[coord.x][coord.y];
 	}
 }

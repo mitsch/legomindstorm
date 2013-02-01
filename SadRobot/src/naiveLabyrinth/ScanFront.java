@@ -20,7 +20,8 @@ public class ScanFront implements Behavior {
 	@Override
 	public void action() {
 		robot.alignLightMiddle();
-		if (robot.sonar.getDistance() < 50) {
+		
+		if (robot.sonar.getDistance() < 20) {
 			if (NaiveLabyrinthSolver.sonarLeft) {
 				robot.pilot.rotate(45, true);
 				while (!suppressed && robot.pilot.isMoving());
@@ -32,7 +33,11 @@ public class ScanFront implements Behavior {
 		} else {
 			robot.leftMotor.resetTachoCount();
 		}
-		robot.joker.rotateTo(-45);
+		
+		if (NaiveLabyrinthSolver.sonarLeft)
+			robot.alignLightLeft();
+		else
+			robot.alignLightRight();
 	}
 
 	@Override

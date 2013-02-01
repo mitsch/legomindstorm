@@ -15,7 +15,6 @@ public class LabyrinthMain {
 	}
 	
 	public static void solveLabyrinth(Robot robot) {
-		robot.joker.rotateTo(-45);
 		NaiveLabyrinthSolver labyrinthSolver = new NaiveLabyrinthSolver(robot, true);
 		labyrinthSolver.go();
 	}

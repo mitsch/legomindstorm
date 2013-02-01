@@ -52,7 +52,7 @@ public class Robot {
 	}
 	
 	public boolean isLineBeneath() {
-		return light.readNormalizedValue() > 350;
+		return light.readValue() > 34;
 	}
 	
 	public boolean isFallBeneath() {

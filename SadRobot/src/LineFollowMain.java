@@ -17,7 +17,7 @@ public class LineFollowMain {
 	public static void followLine(Robot robot) {
 		robot.alignLightMiddle();
 		LineFollower lineFollower = new LineFollower(robot);
-		lineFollower.go();		
+		lineFollower.go();	
 	}
 
 }

@@ -11,6 +11,11 @@ public class NaiveLabyrinthSolver {
 	private Arbitrator labyrinthSolver;
 	
 	public NaiveLabyrinthSolver(Robot robot, boolean leftWall) {
+		if (leftWall)
+			robot.alignLightLeft();
+		else
+			robot.alignLightRight();
+		
 		solved = false;
 		sonarLeft = true;
 		
@@ -24,7 +29,7 @@ public class NaiveLabyrinthSolver {
 		Behavior frontScanner = new ScanFront(robot); 
 		
 		Behavior[] behaviors = {drive, getAwayFromWall, closeToWall,
-				leftBumper,	rightBumper};
+				leftBumper,	rightBumper, frontScanner, lineRec};
 		
 		//Load the behaviors into an arbitrator
 		labyrinthSolver = new Arbitrator(behaviors);

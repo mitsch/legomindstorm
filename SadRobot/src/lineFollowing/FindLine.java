@@ -25,6 +25,7 @@ public class FindLine implements Behavior {
 		suppressed = false;
 		
 		//find line by rotating a bit to the right and left	
+		robot.pilot.setRotateSpeed(60);
 		int currentHeading = 0;
 		int turn = 20;
 		short sign;
@@ -61,6 +62,7 @@ public class FindLine implements Behavior {
 		
 		lastHeadingLeft = sign == 1;
 		LineFollower.lineCurvature += sign*20;
+		robot.pilot.setRotateSpeed(90);
 	}
 
 	@Override

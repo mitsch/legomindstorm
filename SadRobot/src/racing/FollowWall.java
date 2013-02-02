@@ -22,7 +22,7 @@ public class FollowWall implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return !suppressed;
+		return robot.sonar.getDistance() != 255;
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class FollowWall implements Behavior {
 		robot.sonar.continuous();
 		robot.pilot.forward();
 
-		while (!suppressed && !robot.leftTouch.isPressed() && !robot.rightTouch.isPressed())
+		while (!suppressed && prevDistance == 255 && !robot.leftTouch.isPressed() && !robot.rightTouch.isPressed())
 		{
 
 			int curDistance = robot.sonar.getDistance();

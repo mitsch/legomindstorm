@@ -1,4 +1,4 @@
-package naiveLabyrinth;
+package labyrinth;
 
 import common.Robot;
 import lejos.robotics.subsumption.Behavior;
@@ -9,22 +9,23 @@ import lejos.robotics.subsumption.Behavior;
  * @author Thomas
  *
  */
-public class RightBumper implements Behavior {
+public class Bumper implements Behavior {
 	private Robot robot;
 	
-	public RightBumper(Robot robot) {
+	public Bumper(Robot robot) {
 		this.robot = robot;
 	}
 
 	@Override
 	public boolean takeControl() {
-		return !NaiveLabyrinthSolver.solved && robot.rightTouch.isPressed();
+		return !LabyrinthSolver.solved &&
+				(robot.leftTouch.isPressed() || robot.rightTouch.isPressed());
 	}
 
 	@Override
 	public void action() {
 		robot.pilot.travel(-10);
-		robot.pilot.rotate(30);
+		robot.pilot.rotate(-90);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 import common.Robot;
 
-import naiveLabyrinth.NaiveLabyrinthSolver;
+import labyrinth.LabyrinthSolver;
 import lejos.nxt.Button;
 
 public class LabyrinthMain {
@@ -15,7 +15,7 @@ public class LabyrinthMain {
 	}
 	
 	public static void solveLabyrinth(Robot robot) {
-		NaiveLabyrinthSolver labyrinthSolver = new NaiveLabyrinthSolver(robot, true);
+		LabyrinthSolver labyrinthSolver = new LabyrinthSolver(robot, true);
 		labyrinthSolver.go();
 	}
 }

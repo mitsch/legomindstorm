@@ -116,23 +116,25 @@ public class Robot {
 	}
 
 	public void calibrateJoker() {
-		System.out.println("calibrate joker");
-		joker.setStallThreshold(8, 3);
-		joker.backward();
-		while (!joker.isStalled());
-		joker.stop();
-		joker.rotate(16);
-		joker.waitComplete();
-		leftMaxJokerAngle = joker.getPosition();
-		System.out.println("left max " + Integer.toString(leftMaxJokerAngle));
-
-		joker.forward();
-		while (!joker.isStalled());
-		joker.stop(false);
-		joker.rotate(-16);
-		joker.waitComplete();
-		rightMaxJokerAngle = joker.getPosition();
-		System.out.println("right max " + Integer.toString(rightMaxJokerAngle));
+		do {
+			System.out.println("calibrate joker");
+			joker.setStallThreshold(8, 3);
+			joker.backward();
+			while (!joker.isStalled());
+			joker.stop();
+			joker.rotate(16);
+			joker.waitComplete();
+			leftMaxJokerAngle = joker.getPosition();
+			System.out.println("left max " + Integer.toString(leftMaxJokerAngle));
+			
+			joker.forward();
+			while (!joker.isStalled());
+			joker.stop(false);
+			joker.rotate(-16);
+			joker.waitComplete();
+			rightMaxJokerAngle = joker.getPosition();
+			System.out.println("right max " + Integer.toString(rightMaxJokerAngle));
+		} while (java.lang.Math.abs(180 - (rightMaxJokerAngle - leftMaxJokerAngle)) > 4);
 
 		joker.setStallThreshold(50, 20);
 

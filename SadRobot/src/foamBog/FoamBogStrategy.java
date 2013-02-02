@@ -5,28 +5,14 @@ import lejos.robotics.subsumption.Behavior;
 import common.Robot;
 import common.Strategy;
 
-public class FoamBogStrategy implements Strategy {
-	public static boolean passed = false;
-	private Arbitrator foamer;
+public class FoamBogStrategy extends Strategy {
 	
 	public FoamBogStrategy(Robot robot) {
-		passed = false;
-		
-		Behavior drive = new Drive(robot);
-		Behavior bump = new Bumper(robot);
+		Behavior drive = new Drive(robot, this);
+		Behavior bump = new Bumper(robot, this);
 		
 		Behavior[] behaviors = {drive, bump};
 		
-		foamer = new Arbitrator(behaviors, true);	
-	}
-
-	@Override
-	public void start() {
-		foamer.start();
-	}
-
-	@Override
-	public void stop() {
-		passed = true;
+		arbitrator = new Arbitrator(behaviors, true);	
 	}
 }

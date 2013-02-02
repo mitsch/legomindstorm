@@ -1,27 +1,24 @@
 package labyrinth;
 
 import common.Robot;
+import common.Strategy;
+import common.StrategyBehavior;
 
-import lejos.robotics.subsumption.Behavior;
-
-public class Drive implements Behavior {
+public class Drive extends StrategyBehavior {
 	private Robot robot;
-	private boolean suppressed;
 	
-	public Drive(Robot robot) {
+	public Drive(Robot robot, Strategy parent) {
+		super(parent);
 		this.robot = robot;
-		this.suppressed = false;
 	}
 
 	@Override
-	public boolean takeControl() {
+	public boolean wantsToWork() {
 		return true;
 	}
 
 	@Override
-	public void action() {
-		suppressed = false;
-		
+	public void work() {
 		while (!suppressed) {
 			int distance = robot.sonar.getDistance();
 			if (distance < 15) {
@@ -38,10 +35,5 @@ public class Drive implements Behavior {
 			} else
 				robot.pilot.forward();
 		}
-	}
-
-	@Override
-	public void suppress() {
-		this.suppressed = true;
 	}
 }

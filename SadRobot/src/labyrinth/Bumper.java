@@ -1,7 +1,8 @@
 package labyrinth;
 
 import common.Robot;
-import lejos.robotics.subsumption.Behavior;
+import common.Strategy;
+import common.StrategyBehavior;
 
 /**
  * This Behavior enables the robot to save obstacles in the labyrinth map when
@@ -9,26 +10,22 @@ import lejos.robotics.subsumption.Behavior;
  * @author Thomas
  *
  */
-public class Bumper implements Behavior {
+public class Bumper extends StrategyBehavior {
 	private Robot robot;
 	
-	public Bumper(Robot robot) {
+	public Bumper(Robot robot, Strategy parent) {
+		super(parent);
 		this.robot = robot;
 	}
 
 	@Override
-	public boolean takeControl() {
-		return !LabyrinthStrategy.solved &&
-				(robot.leftTouch.isPressed() || robot.rightTouch.isPressed());
+	public boolean wantsToWork() {
+		return robot.leftTouch.isPressed() || robot.rightTouch.isPressed();
 	}
 
 	@Override
-	public void action() {
+	public void work() {
 		robot.pilot.travel(-10);
 		robot.pilot.rotate(-90);
-	}
-
-	@Override
-	public void suppress() {
 	}
 }

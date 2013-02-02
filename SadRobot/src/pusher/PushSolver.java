@@ -3,22 +3,17 @@ package pusher;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import common.Robot;
+import common.Strategy;
 
-public class PushSolver {
-	private Arbitrator pushSolver;
+public class PushSolver extends Strategy {
 	public static boolean measured = false;
-	public static boolean passed = false;
 	
 	public PushSolver(Robot robot) {
-		Behavior measurePusher = new PusherMeasurer(robot);
-		Behavior leadFoot = new LeadFootDriver(robot);
+		Behavior measurePusher = new PusherMeasurer(robot, this);
+		Behavior leadFoot = new LeadFootDriver(robot, this);
 		
 		Behavior[] behaviors = {measurePusher, leadFoot};
 		
-		pushSolver = new Arbitrator(behaviors, true);
-	}
-	
-	public void go() {
-		pushSolver.start();
+		arbitrator = new Arbitrator(behaviors, true);
 	}
 }

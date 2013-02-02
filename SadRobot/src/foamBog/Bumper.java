@@ -1,28 +1,24 @@
 package foamBog;
 
 import common.Robot;
+import common.Strategy;
+import common.StrategyBehavior;
 
-import lejos.robotics.subsumption.Behavior;
-
-public class Bumper implements Behavior {
+public class Bumper extends StrategyBehavior {
 	private Robot robot;
 	
-	public Bumper(Robot robot) {
+	public Bumper(Robot robot, Strategy parent) {
+		super(parent);
 		this.robot = robot;
 	}
 
 	@Override
-	public boolean takeControl() {
+	public boolean wantsToWork() {
 		return robot.leftTouch.isPressed() && robot.rightTouch.isPressed();
 	}
 
 	@Override
-	public void action() {
-		FoamBogStrategy.passed = true;
+	public void work() {
+		parent.stop();
 	}
-
-	@Override
-	public void suppress() {
-	}
-
 }

@@ -5,37 +5,25 @@ import common.Strategy;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class LabyrinthStrategy implements Strategy {
-	
-	public static boolean solved = false;
+public class LabyrinthStrategy extends Strategy {	
 	public static boolean sonarLeft = true;
-	private Arbitrator labyrinthSolver;
 	
 	public LabyrinthStrategy(Robot robot, boolean sonarLeft) {
-		solved = false;
 		LabyrinthStrategy.sonarLeft = sonarLeft;
 		
 		//Prepare behaviors
-		Behavior driveAlongWall = new Drive(robot);
-		Behavior bumper = new Bumper(robot);
-		Behavior lineRec = new RecognizeLine(robot);
+		Behavior driveAlongWall = new Drive(robot, this);
+		Behavior bumper = new Bumper(robot, this);
+		Behavior lineRec = new RecognizeLine(robot, this);
 		
 		Behavior[] behaviors = {driveAlongWall, bumper, lineRec};
 		
 		//Load the behaviors into an arbitrator
-		labyrinthSolver = new Arbitrator(behaviors);
+		arbitrator = new Arbitrator(behaviors);
 		
 		if (sonarLeft)
 			robot.alignLightLeft();
 		else
 			robot.alignLightRight();
-	}
-
-	public void start() {
-		labyrinthSolver.start();
-	}
-	
-	public void stop() {
-		solved = true;
 	}
 }

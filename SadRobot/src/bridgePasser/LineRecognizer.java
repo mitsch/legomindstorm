@@ -1,27 +1,28 @@
 package bridgePasser;
 
 import common.Robot;
+import common.Strategy;
+import common.StrategyBehavior;
 
-import lejos.robotics.subsumption.Behavior;
+import lejos.nxt.Sound;
 
-public class LineRecognizer implements Behavior {
+public class LineRecognizer extends StrategyBehavior {
 	private Robot robot;
-	
-	public LineRecognizer(Robot robot) {
+
+	public LineRecognizer(Robot robot, Strategy parent) {
+		super(parent);
 		this.robot = robot;
 	}
 
 	@Override
-	public boolean takeControl() {
-		return robot.isLineBeneath() && !robot.isFallBeneath();
+	public boolean wantsToWork() {
+		return robot.light.readValue() > (robot.getLineValue()
+				+ robot.getWoodValue()) / 2;
 	}
 
 	@Override
-	public void action() {
-		BridgeStrategy.bridgePassed = true;
-	}
-
-	@Override
-	public void suppress() {
+	public void work() {
+		parent.stop();
+		Sound.beepSequenceUp();
 	}
 }

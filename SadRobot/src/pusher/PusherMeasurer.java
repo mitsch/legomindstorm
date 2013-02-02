@@ -1,28 +1,24 @@
 package pusher;
 
 import common.Robot;
+import common.Strategy;
+import common.StrategyBehavior;
 
-import lejos.robotics.subsumption.Behavior;
-
-public class PusherMeasurer implements Behavior {
+public class PusherMeasurer extends StrategyBehavior {
 	private Robot robot;
 	
-	public PusherMeasurer(Robot robot) {
+	public PusherMeasurer(Robot robot, Strategy parent) {
+		super(parent);
 		this.robot = robot;
 	}
 
 	@Override
-	public boolean takeControl() {
+	public boolean wantsToWork() {
 		return !PushSolver.measured;
 	}
 
 	@Override
-	public void action() {
-		//try to determine  the frequency of the pusher
+	public void work() {
+		//TODO: try to determine  the frequency of the pusher
 	}
-
-	@Override
-	public void suppress() {
-	}
-
 }

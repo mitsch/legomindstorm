@@ -16,6 +16,6 @@ public class LabyrinthMain {
 	
 	public static void solveLabyrinth(Robot robot) {
 		LabyrinthStrategy labyrinthSolver = new LabyrinthStrategy(robot, true);
-		labyrinthSolver.go();
+		labyrinthSolver.start();
 	}
 }

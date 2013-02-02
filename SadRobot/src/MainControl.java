@@ -51,6 +51,8 @@ public class MainControl {
 				}
 			}
 		});
+		
+		Button.ESCAPE.waitForPressAndRelease();
 	}
 	
 	/**
@@ -68,25 +70,19 @@ public class MainControl {
 	 * @return the number of lines counted
 	 */
 	public static int analyzeLines() {
+		//we find the first line
 		robot.pilot.forward();
 		int lineCount = 0;
 		while(!robot.isLineBeneath());
-		int tacho = robot.leftMotor.getTachoCount();
-		while(robot.isLineBeneath());
-		int lineWidth = robot.leftMotor.getTachoCount() - tacho;
-		lineCount++;
 		
-		robot.leftMotor.rotate((int)(lineWidth * 1.5), true);
-		robot.rightMotor.rotate((int)(lineWidth * 1.5), true);
-		while (robot.rightMotor.isMoving());
-		
-		//we should now be exactly on the next line
-		
+		//now we count them
 		while (robot.isLineBeneath()) {
 			lineCount++;
-			robot.leftMotor.rotate(lineWidth * 2, true);
-			robot.rightMotor.rotate(lineWidth * 2, true); 
-			while (robot.rightMotor.isMoving());
+			robot.pilot.travel(20, true);
+			//we have to leave the current line, cross the void, and enter the
+			//next line
+			while (robot.pilot.isMoving() && robot.isLineBeneath());
+			while (robot.pilot.isMoving() && !robot.isLineBeneath());
 		}
 		
 		return lineCount;

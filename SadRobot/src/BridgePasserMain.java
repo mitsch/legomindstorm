@@ -19,6 +19,6 @@ public class BridgePasserMain {
 		else
 			robot.alignLightLeft();
 		BridgeStrategy passer = new BridgeStrategy(robot, leftBridge);
-		passer.go();
+		passer.start();
 	}
 }

@@ -1,14 +1,24 @@
 package common;
 
-public interface Strategy {
+import lejos.robotics.subsumption.Arbitrator;
+
+public abstract class Strategy {
+	protected Arbitrator arbitrator;
+	private boolean stopped;
 	
-	/**
-	 * Start the strategy.
-	 */
-	public void start();
+	public Strategy() {
+		stopped = false;
+	}
 	
-	/**
-	 * 
-	 */
-	public void stop();
+	public void stop() {
+		stopped = true;
+	}
+
+	public boolean isStopped() {
+		return stopped;
+	}
+	
+	public void start() {
+		arbitrator.start();
+	}
 }

@@ -1,25 +1,20 @@
 package lineFollowing;
 
 import common.Robot;
+import common.Strategy;
 
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class LineFollower {
-	private Arbitrator lineFollower;
+public class LineFollower extends Strategy {
 	public static int lineCurvature = 0;
 	
 	public LineFollower(Robot robot) {
-		Behavior followLine = new FollowLine(robot);
-		Behavior findLine = new FindLine(robot);
+		Behavior followLine = new FollowLine(robot, this);
+		Behavior findLine = new FindLine(robot, this);
 		
 		Behavior[] behaviors = {followLine, findLine};
 		
-		lineFollower = new Arbitrator(behaviors, true);
+		arbitrator = new Arbitrator(behaviors, true);
 	}
-	
-	public void go() {
-		lineFollower.start();
-	}
-
 }

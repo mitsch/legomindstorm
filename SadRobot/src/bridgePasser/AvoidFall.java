@@ -1,25 +1,26 @@
 package bridgePasser;
 
 import common.Robot;
+import common.Strategy;
+import common.StrategyBehavior;
 
-import lejos.robotics.subsumption.Behavior;
-
-public class AvoidFall implements Behavior {
+public class AvoidFall extends StrategyBehavior {
 	private Robot robot;
 	private boolean leftBridge;
 	
-	public AvoidFall(Robot robot, boolean leftBridge) {
+	public AvoidFall(Robot robot, boolean leftBridge, Strategy parent) {
+		super(parent);
 		this.robot = robot;
 		this.leftBridge = leftBridge;	
 	}
 
 	@Override
-	public boolean takeControl() {
-		return !BridgeStrategy.bridgePassed && robot.isFallBeneath();
+	public boolean wantsToWork() {
+		return robot.isFallBeneath();
 	}
 
 	@Override
-	public void action() {
+	public void work() {
 		if (leftBridge)
 			robot.pilot.steer(-100, 20);
 		else
@@ -27,9 +28,4 @@ public class AvoidFall implements Behavior {
 		while (robot.pilot.isMoving());
 		robot.pilot.stop();
 	}
-
-	@Override
-	public void suppress() {
-	}
-
 }

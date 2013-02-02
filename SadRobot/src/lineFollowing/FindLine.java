@@ -1,29 +1,26 @@
 package lineFollowing;
 
 import common.Robot;
-import lejos.nxt.Sound;
-import lejos.robotics.subsumption.Behavior;
+import common.Strategy;
+import common.StrategyBehavior;
 
-public class FindLine implements Behavior {
+public class FindLine extends StrategyBehavior {
 	private Robot robot;
-	private boolean suppressed;
 	private boolean lastHeadingLeft;
 	
-	public FindLine(Robot robot) {
+	public FindLine(Robot robot, Strategy parent) {
+		super(parent);
 		this.robot = robot;
-		this.suppressed = false;
 		this.lastHeadingLeft = true;
 	}
 
 	@Override
-	public boolean takeControl() {
+	public boolean wantsToWork() {
 		return !robot.isLineBeneath();
 	}
 
 	@Override
-	public void action() {
-		suppressed = false;
-		
+	public void work() {
 		//find line by rotating a bit to the right and left	
 		robot.pilot.setRotateSpeed(60);
 		int currentHeading = 0;
@@ -37,9 +34,7 @@ public class FindLine implements Behavior {
 		while (!suppressed && !robot.isLineBeneath()) {
 			//if we would rotate too far
 			if (turn >= 180) {
-				Sound.beep();
 				robot.pilot.rotate(-currentHeading + sign*20);
-				Sound.beep();
 				if (!suppressed) {
 					robot.pilot.travel(30);
 					while (!suppressed && robot.navigator.isMoving());
@@ -63,10 +58,5 @@ public class FindLine implements Behavior {
 		lastHeadingLeft = sign == 1;
 		LineFollower.lineCurvature += sign*20;
 		robot.pilot.setRotateSpeed(90);
-	}
-
-	@Override
-	public void suppress() {
-		suppressed = true;
 	}
 }

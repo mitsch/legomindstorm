@@ -51,12 +51,28 @@ public class Robot {
 		return this.getPose().getLocation().add(ultraSonicPosition);
 	}
 	
+	public int getLineValue() {
+		return 46;
+	}
+	
+	public int getWoodValue() {
+		return 37;
+	}
+	
+	public int getFallValue() {
+		return 28;
+	}
+	
+	public int getBlackValue() {
+		return 26;
+	}
+	
 	public boolean isLineBeneath() {
-		return light.readValue() > 34;
+		return light.readValue() > (getLineValue() + getBlackValue())/2;
 	}
 	
 	public boolean isFallBeneath() {
-		return light.readValue() < 27;
+		return light.readValue() < (getWoodValue() + getFallValue())/2;
 	}
 	
 	public Point useSonar() {	

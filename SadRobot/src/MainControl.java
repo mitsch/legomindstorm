@@ -1,7 +1,10 @@
+import bridgePasser.BridgeStrategy;
+import labyrinth.LabyrinthStrategy;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import common.Robot;
 import common.Strategy;
+import foamBog.FoamBogStrategy;
 
 public class MainControl {
 	public enum Mode {WAIT_FOR_BARCODE, WAIT_FOR_RACE, RUNNING};
@@ -11,8 +14,8 @@ public class MainControl {
 	
 	/**
 	 * This is the main entry point for our program. We initialize the
-	 * Robot. After that, we count the lines to determine the current level
-	 * and act accordingly.
+	 * Robot. After that, we register a ButtonListener to the ENTER-Button
+	 * so we will know when the race begins.
 	 */
 	public static void main(String[] args) {	
 		MainControl.robot = new Robot();
@@ -41,12 +44,22 @@ public class MainControl {
 					mode = Mode.WAIT_FOR_BARCODE;
 					break;
 				case WAIT_FOR_BARCODE:
+					//If we were just waiting to reenter the race, we have a
+					//look at the bar code to see what out current level is
 					mode = Mode.RUNNING;
-					int lines = analyzeLines();
-					startProgram(lines);
+					startNextLevel();
 				}
 			}
 		});
+	}
+	
+	/**
+	 * This little gadget starts the next level - independent of where we were
+	 * before.
+	 */
+	public static void startNextLevel() {
+		int lines = analyzeLines();
+		startProgram(lines);
 	}
 	
 	/**
@@ -132,14 +145,28 @@ public class MainControl {
 	 * or just in the process of falling off.
 	 */
 	public static void bridge() {
+		Strategy bridgeStrategy = new BridgeStrategy(robot, false);	
+		bridgeStrategy.start();	
+		startNextLevel();
 	}
 	
 	/**
 	 * A labyrinth - luckily a very easy one. Nevertheless, we simply tag along
 	 * the left or right wall and hope we end up somewhere.
-	 * Did I mention the bog of foam material lying around here?
 	 */
 	public static void labyrinth() {
+		Strategy labyrinthStrategy = new LabyrinthStrategy(robot, true);
+		labyrinthStrategy.start();
+		startNextLevel();
+	}
+	
+	/**
+	 * A bog of foam. How stupid. FYI: Our robot cannot swim.
+	 */
+	public static void foamBog() {
+		Strategy foamBogStrategy = new FoamBogStrategy(robot);
+		foamBogStrategy.start();
+		bluetoothGate();
 	}
 	
 	/**

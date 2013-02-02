@@ -1,6 +1,6 @@
 package testing;
 
-import bridgePasser.BridgePasser;
+import bridgePasser.BridgeStrategy;
 import lejos.nxt.Button;
 
 import common.Robot;

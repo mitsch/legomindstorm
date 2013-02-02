@@ -1,5 +1,5 @@
 import lejos.nxt.Button;
-import bridgePasser.BridgePasser;
+import bridgePasser.BridgeStrategy;
 import common.Robot;
 
 public class BridgePasserMain {
@@ -18,7 +18,7 @@ public class BridgePasserMain {
 			robot.alignLightRight();
 		else
 			robot.alignLightLeft();
-		BridgePasser passer = new BridgePasser(robot, leftBridge);
+		BridgeStrategy passer = new BridgeStrategy(robot, leftBridge);
 		passer.go();
 	}
 }

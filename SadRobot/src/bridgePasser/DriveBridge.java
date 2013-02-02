@@ -17,7 +17,7 @@ public class DriveBridge implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return !robot.isFallBeneath();
+		return !BridgeStrategy.bridgePassed && !robot.isFallBeneath();
 	}
 
 	@Override

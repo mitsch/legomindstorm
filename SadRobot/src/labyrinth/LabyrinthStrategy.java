@@ -1,25 +1,26 @@
 package labyrinth;
 
 import common.Robot;
+import common.Strategy;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class LabyrinthSolver {
+public class LabyrinthStrategy implements Strategy {
 	
 	public static boolean solved = false;
 	public static boolean sonarLeft = true;
 	private Arbitrator labyrinthSolver;
 	
-	public LabyrinthSolver(Robot robot, boolean sonarLeft) {
+	public LabyrinthStrategy(Robot robot, boolean sonarLeft) {
 		solved = false;
-		LabyrinthSolver.sonarLeft = sonarLeft;
+		LabyrinthStrategy.sonarLeft = sonarLeft;
 		
 		//Prepare behaviors
 		Behavior driveAlongWall = new Drive(robot);
 		Behavior bumper = new Bumper(robot);
-		//Behavior lineRec = new RecognizeLine(robot);
+		Behavior lineRec = new RecognizeLine(robot);
 		
-		Behavior[] behaviors = {driveAlongWall, bumper};
+		Behavior[] behaviors = {driveAlongWall, bumper, lineRec};
 		
 		//Load the behaviors into an arbitrator
 		labyrinthSolver = new Arbitrator(behaviors);
@@ -30,7 +31,11 @@ public class LabyrinthSolver {
 			robot.alignLightRight();
 	}
 
-	public void go() {
+	public void start() {
 		labyrinthSolver.start();
+	}
+	
+	public void stop() {
+		solved = true;
 	}
 }

@@ -56,7 +56,7 @@ public class Robot {
 	}
 	
 	public boolean isFallBeneath() {
-		return light.readValue() < 34;
+		return light.readValue() < 27;
 	}
 	
 	public Point useSonar() {	

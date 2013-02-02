@@ -24,6 +24,9 @@ public class Robot {
 	public DifferentialPilot pilot;
 	
 	private Point ultraSonicPosition;
+
+	private int leftMaxJokerAngle;
+	private int rightMaxJokerAngle;
 	
 	public Robot() {
 		leftMotor = Motor.C;
@@ -41,6 +44,9 @@ public class Robot {
 		navigator = new Navigator(pilot);
 		
 		ultraSonicPosition = new Point(10, 10);
+
+		leftMaxJokerAngle = -90;
+		rightMaxJokerAngle = 90;
 	}
 	
 	public Pose getPose() {
@@ -86,22 +92,50 @@ public class Robot {
 	}
 	
 	public void alignLightLeft() {
-		joker.rotateTo(-90);
+		joker.rotateTo(leftMaxJokerAngle);
 	}
 	
 	public void alignLightMiddle() {
-		joker.rotateTo(0);
+		joker.rotateTo((leftMaxJokerAngle + rightMaxJokerAngle) / 2);
 	}
 	
 	public void alignLightRight() {
-		joker.rotateTo(90);
+		joker.rotateTo(rightMaxJokerAngle);
 	}
 	
 	public int getLeftJoker() {
-		return -90;
+		return leftMaxJokerAngle;
 	}
 	
 	public int getRightJoker() {
-		return 90;
+		return rightMaxJokerAngle;
+	}
+
+	public int getMiddleJoker() {
+		return (leftMaxJokerAngle + rightMaxJokerAngle) / 2;
+	}
+
+	public void calibrateJoker() {
+		System.out.println("calibrate joker");
+		joker.setStallThreshold(8, 3);
+		joker.backward();
+		while (!joker.isStalled());
+		joker.stop();
+		joker.rotate(16);
+		joker.waitComplete();
+		leftMaxJokerAngle = joker.getPosition();
+		System.out.println("left max " + Integer.toString(leftMaxJokerAngle));
+
+		joker.forward();
+		while (!joker.isStalled());
+		joker.stop(false);
+		joker.rotate(-16);
+		joker.waitComplete();
+		rightMaxJokerAngle = joker.getPosition();
+		System.out.println("right max " + Integer.toString(rightMaxJokerAngle));
+
+		joker.setStallThreshold(50, 20);
+
+		joker.rotateTo((leftMaxJokerAngle + rightMaxJokerAngle) / 2);
 	}
 }

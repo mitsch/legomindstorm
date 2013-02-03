@@ -10,15 +10,15 @@ public abstract class Strategy {
 		stopped = false;
 	}
 	
+	public void start() {
+		arbitrator.start();
+	}
+	
 	public void stop() {
 		stopped = true;
 	}
 
 	public boolean isStopped() {
 		return stopped;
-	}
-	
-	public void start() {
-		arbitrator.start();
 	}
 }

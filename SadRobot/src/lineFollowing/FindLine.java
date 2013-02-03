@@ -37,7 +37,7 @@ public class FindLine extends StrategyBehavior {
 				robot.pilot.rotate(-currentHeading + sign*20);
 				if (!suppressed) {
 					robot.pilot.travel(30);
-					while (!suppressed && robot.navigator.isMoving());
+					while (!suppressed && robot.pilot.isMoving());
 					robot.pilot.stop();
 				}
 				break;

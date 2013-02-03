@@ -1,4 +1,4 @@
-package lineFollowing;
+package plankBridge;
 
 import common.Robot;
 import common.Strategy;
@@ -6,12 +6,11 @@ import common.Strategy;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class LineFollower extends Strategy {
-	public static int lineCurvature = 0;
+public class PlankBridgePasser extends Strategy {
 	
-	public LineFollower(Robot robot) {
-		Behavior followLine = new FollowLine(robot, this);
-		Behavior findLine = new FindLine(robot, this);
+	public PlankBridgePasser(Robot robot) {
+		Behavior followLine = new White(robot, this);
+		Behavior findLine = new Black(robot, this);
 		
 		Behavior[] behaviors = {findLine, followLine};
 		

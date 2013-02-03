@@ -1,5 +1,7 @@
 package testing;
 
+import lejos.nxt.Button;
+import lejos.nxt.Sound;
 import lejos.util.Delay;
 import common.GateControl;
 import common.GateCommon;
@@ -12,6 +14,7 @@ public class GateTester {
 	 */
 	public static void main(String[] args) {
 		Robot robot = new Robot();
+		Button.waitForAnyPress();
 		openGate(robot);
 	}
 	
@@ -21,10 +24,15 @@ public class GateTester {
 		while (robot.sonar.getDistance() > 20);
 		robot.pilot.stop();
 		
+		Sound.beep();
 		GateControl gateControl = new GateControl();
-		while (!gateControl.connectionToGateSuccessful(GateCommon.GATE_3));
+		while (!gateControl.connectionToGateSuccessful(GateCommon.GATE_1));
+		Sound.beep();
 		gateControl.openGate();
 		gateControl.disconnectFromGate();
+		Sound.beep();
+		
+		while(robot.sonar.getDistance() < 30);
 		
 		robot.pilot.forward();
 		Delay.msDelay(2000);

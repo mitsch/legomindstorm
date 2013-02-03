@@ -1,7 +1,6 @@
 package colorFinder;
 
 import common.Robot;
-import common.Color;
 import common.Strategy;
 import common.StrategyBehavior;
 
@@ -21,10 +20,6 @@ public class FindColor extends StrategyBehavior {
 	
 	@Override
 	public void work() {
-		robot.pilot.forward();
-		while (!suppressed){
-			robot.light.readValue();
-		}
 		robot.pilot.stop();
 	}
 }

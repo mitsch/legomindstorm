@@ -3,6 +3,7 @@ package racing;
 import common.Robot;
 import common.Strategy;
 import racing.FollowWall;
+import racing.FindWall;
 
 import lejos.nxt.Sound;
 import lejos.util.Delay;
@@ -15,29 +16,25 @@ public class Racer extends Strategy
 	
 	public Racer(Robot robot) {
 		FollowWall followWall = new FollowWall(robot, this);
-		Behavior [] behaviours = {followWall};
+		FindWall findWall = new FindWall(robot, this);
+		Behavior [] behaviours = {followWall, findWall};
 
-		arbitrator = new Arbitrator(behaviours, true);
+		arbitrator = new Arbitrator(behaviours, true);		
 
 		robot.joker.rotateTo(robot.getLeftJoker());
 		int leftDistance = robot.sonar.getDistance();
 		robot.joker.rotateTo(robot.getRightJoker());
 		int rightDistance = robot.sonar.getDistance();
 
-		regularDistance = (leftDistance + rightDistance) / 2;
+		if (leftDistance == 255 && rightDistance == 255)	regularDistance = 50;
+		else if (leftDistance == 255)	regularDistance = rightDistance;
+		else if (rightDistance == 255)	regularDistance = leftDistance;
+		else	regularDistance = (leftDistance + rightDistance) / 2;
 		
 		if (leftDistance < rightDistance)
 			robot.joker.rotateTo(robot.getLeftJoker() + 20);
 		else
 			robot.joker.rotateTo(robot.getRightJoker() - 20);
-
-		Sound.playTone(440, 500);
-		Delay.msDelay(500);
-		Sound.playTone(440, 500);
-		Delay.msDelay(500);
-		Sound.playTone(440, 500);
-		Delay.msDelay(500);
-		Sound.playTone(659, 1000);
 		
 		robot.pilot.forward();
 	}

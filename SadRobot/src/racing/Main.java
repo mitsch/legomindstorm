@@ -9,7 +9,7 @@ public class Main
 		robot.calibrateJoker();
 		
 		Racer racer = new Racer(robot);
-		racer.go();
+		racer.start();
 	}
 }
 

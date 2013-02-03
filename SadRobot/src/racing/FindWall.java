@@ -10,12 +10,22 @@ public class FindWall implements Behavior {
 	private class DetectionRange {
 		public int leftAngle;
 		public int rightAngle;
-		public int averageDistance;
+		public float averageDistance;
 
-		public DetectionRange(int leftAngle, int rightAngle, int averageDistance) {
+		public DetectionRange(int leftAngle, int rightAngle, float averageDistance) {
 			this.leftAngle = leftAngle;
 			this.rightAngle = rightAngle;
 			this.averageDistance = averageDistance;
+		}
+	};
+
+	private class DetectionEdge {
+		public boolean leftEdge;
+		public DetectionRange range;
+
+		public DetectionEdge(boolean leftEdge, DetectionRange range) {
+			this.leftEdge = leftEdge;
+			this.range = range;
 		}
 	};
 	
@@ -104,26 +114,72 @@ public class FindWall implements Behavior {
 			rangesB.add(new DetectionRange(lastAngle, firstAngle, distanceSum / samplesCount));
 		}
 
-		if (rangesA.size() == 0)	return rangesB;
-		if (rangesB.size() == 0)	return rangesA;
+		java.util.ArrayList<DetectionEdge> edges = new java.util.ArrayList<DetectionEdge>();
 
-		// iterate through lists to find hopefully matching ranges
-		ListIterator<DetectionRange> iterateA = rangesA.listIterator();
-		listIterator<DetectionRange> iterateB = rangesB.listIterator(rangesB.size());
+		for (DetectionRange range: rangesA) {
+			edges.add(new DetectionEdge(true, range));
+			edges.add(new DetectionEdge(false, range);
+		}
+		for (DetectionRange range: rangesB) {
+			edges.add(new DetectionEdge(true, range));
+			edges.add(new DetectionEdge(false, range));
+		}
 
-		java.util.ListArray<DetectionRange> result = new java.util.ListArray<DetectionRange>();
-		DetectionRange rangeA = iterateA.next();
-		DetectionRange rangeB = iterateB.next();
-		while (iterateA.hasNext() || iterateB.hasPrevious()) {
-			if (rangeA.firstAngle <= rangeB.firstAngle) {
-				if (rangeA.lastAngle >= rangeB.lastAngle) {
-					if (rangeA.averageDistance > rangeB.averageDistance) {
-						result.add(rangeA);
+		rangesA = null;
+		rangesB = null;
+
+		java.util.Collection.sort(edges, new Comparator<DetectionEdge>() {
+			public int compare(DetectionEdge a, DetectionEdge b) {
+				int angleA = a.leftAngle ? a.range.leftAngle : a.range.rightAngle;
+				int angleB = b.leftAngle ? b.range.leftAngle : b.range.rightAngle;
+
+				if (angleA == angleB) {
+					if ((a.leftEdge && b.leftEdge) || (!a.leftEdge || !b.leftEdge)) {
+						return a.range.averageDistance < b.range.averageDistance;
+					} else {
+						return !a.leftEdge && b.leftEdge;
 					}
+				} else {
+					return angleA < angleB;
 				}
 			}
-			else {
+		});
 
+		java.util.ArrayList<DetectionRange> result = new java.util.ArrayList<DetectionRange>();
+		boolean detectedOverlapping = false;
+		DetectionEdge lastEdge = null;
+		for (DetectionEdge edge: edges) {
+			if (lastEdge == null)
+				if (edge.leftEdge) {
+					lastEdge = edge;
+			}
+			else if (lastEdge.leftEdge && edge.leftEdge) {
+				lastEdge = lastEdge.range.averageDistance > edge.range.averageDistance ? lastEdge : edge;
+				detectedOverlapping = true;
+			}
+			else if (lastEdge.leftEdge && !edge.leftEdge) {
+				if (lastEdge.range == edge.range) {
+					if (detectedOverlapping
+				}
+			}
+
+			else if (lastEdge.leftEdge && edge.rightEdge && lastEdge.range == edge.range) {
+				// must be a movable object because it apparently disappeared
+			}
+			else if (lastEdge.leftEdge && 
+		}
+
+		for (DetectionEdge edge : edges) {
+			if (lastEdge == null && edge.firstAngle) {
+				lastEdge = edge;
+			} else if (lastEdge.firstAngle && !edge.firstAngle && java.lang.Math.abs(lastEdge.averageDistance - edge.averageDistance) < 0.0001) {
+				result.add(new DetectionRange(lastEdge.angle, edge.angle, edge.averageDistance));
+				lastEdge = null;
+			} else if (lastEdge.firstAngle && edge.firstAngle) {
+				
+			} else if (!lastEdge.firstAngle && !edge.firstAngle) {
+				
+			} else if (!lastEdge.firstAngle && edge.firstAngle) {
 			}
 		}
 	}

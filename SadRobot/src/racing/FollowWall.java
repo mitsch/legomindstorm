@@ -1,76 +1,37 @@
 package racing;
 
 import common.Robot;
+import common.Strategy;
+import common.StrategyBehavior;
 import racing.Racer;
 import lejos.nxt.Sound;
+import java.lang.Math;
 
 
-import lejos.robotics.subsumption.Behavior;
 
-public class FollowWall implements Behavior {
-	private boolean suppressed;
+public class FollowWall extends StrategyBehavior {
 	private Robot robot;
-	private int prevDistance;
-	private float prevTacho;
+	private int distance;
 	private int seriousDistanceDrop;
 	
-	public FollowWall(Robot robot) {
-		this.robot = robot; 
-		this.suppressed = false;
+	public FollowWall(Robot robot, Strategy parent) {
+		super(parent);
+		this.robot = robot;
 		this.seriousDistanceDrop = 5;
+		this.distance = Racer.regularDistance;
 	}
 
 	@Override
-	public boolean takeControl() {
-		return robot.sonar.getDistance() != 255;
+	public boolean wantsToWork() {
+		distance = robot.sonar.getDistance();
+		return distance != 255 && Math.abs(distance - Racer.regularDistance) < seriousDistanceDrop;
 	}
 
 	@Override
-	public void action() {
-		suppressed = false;
+	public void work() {
+		int deltaDistance = distance - Racer.regularDistance;
+		int factor = robot.getMiddleJoker() > robot.joker.getPosition() ? 10 : -10;
 
-		while (!robot.leftTouch.isPressed());
-
-		prevDistance = racing.Racer.regularDistance;
-		prevTacho = robot.pilot.getMovementIncrement();
-
-
-		robot.joker.rotateTo(robot.getLeftJoker());
-		robot.sonar.continuous();
-		robot.pilot.forward();
-
-		while (!suppressed && prevDistance == 255 && !robot.leftTouch.isPressed() && !robot.rightTouch.isPressed())
-		{
-
-			int curDistance = robot.sonar.getDistance();
-			float curTacho = robot.pilot.getMovementIncrement();
-			int deltaDistance = curDistance - racing.Racer.regularDistance;
-
-			System.out.println(Integer.toString(curDistance) + " " + Float.toString(curTacho));
-
-			
-			if (java.lang.Math.abs(deltaDistance) >= seriousDistanceDrop) {
-				racing.Racer.regularDistance = curDistance;
-				System.out.println("regular = " + Integer.toString(curDistance));
-				Sound.buzz();
-			}
-			else if (java.lang.Math.abs(deltaDistance) >= 2) {
-				int newSteer = 10 * deltaDistance / ((int)(curTacho - prevTacho) + 1);
-				robot.pilot.steer(newSteer);
-				System.out.println("correct to " + Integer.toString(newSteer));
-			}
-			else {
-				System.out.println("none");
-			}
-			prevTacho = curTacho;
-			prevDistance = curDistance;
-		}
-
-		robot.pilot.stop();
-	}
-
-	@Override
-	public void suppress() {
-		suppressed = true;
+		robot.pilot.steer(factor *  deltaDistance);
 	}
 }

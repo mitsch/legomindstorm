@@ -15,7 +15,8 @@ public class LabyrinthMain {
 	}
 	
 	public static void solveLabyrinth(Robot robot) {
-		LabyrinthStrategy labyrinthSolver = new LabyrinthStrategy(robot, true);
+		LabyrinthStrategy labyrinthSolver = new LabyrinthStrategy(robot, true,
+				LabyrinthStrategy.BumpResult.TURN);
 		labyrinthSolver.start();
 	}
 }

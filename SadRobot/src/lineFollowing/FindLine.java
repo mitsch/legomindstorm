@@ -7,11 +7,13 @@ import common.StrategyBehavior;
 public class FindLine extends StrategyBehavior {
 	private Robot robot;
 	private boolean lastHeadingLeft;
+	private boolean detectEndOfLine;
 	
-	public FindLine(Robot robot, Strategy parent) {
+	public FindLine(Robot robot, boolean detectEndOfLine, Strategy parent) {
 		super(parent);
 		this.robot = robot;
 		this.lastHeadingLeft = true;
+		this.detectEndOfLine = detectEndOfLine;
 	}
 
 	@Override
@@ -33,6 +35,7 @@ public class FindLine extends StrategyBehavior {
 		
 		while (!suppressed && !robot.isLineBeneath()) {
 			//if we would rotate too far
+			//TODO: react to end of line
 			if (turn >= 180) {
 				robot.pilot.rotate(-currentHeading + sign*20);
 				if (!suppressed) {

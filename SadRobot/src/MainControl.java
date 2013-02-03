@@ -1,7 +1,11 @@
+import plankBridge.PlankBridgePasser;
 import bridgePasser.BridgeStrategy;
 import labyrinth.LabyrinthStrategy;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lineFollowing.LineFollower;
+import common.GateCommon;
+import common.GateControl;
 import common.Robot;
 import common.Strategy;
 import foamBog.FoamBogStrategy;
@@ -177,7 +181,8 @@ public class MainControl {
 		robot.light.setFloodlight(true);
 		
 		//We use our labyrinth algorithm to pass this
-		currentStrategy = new LabyrinthStrategy(robot, true);
+		currentStrategy = new LabyrinthStrategy(robot, true,
+				LabyrinthStrategy.BumpResult.EVADE);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -214,7 +219,8 @@ public class MainControl {
 		robot.sonar.continuous();
 		robot.light.setFloodlight(true);
 		
-		currentStrategy = new LabyrinthStrategy(robot, true);
+		currentStrategy = new LabyrinthStrategy(robot, true,
+				LabyrinthStrategy.BumpResult.TURN);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -230,6 +236,7 @@ public class MainControl {
 		robot.sonar.continuous();
 		robot.light.setFloodlight(true);
 		
+		//We could also simply use the labyrinth strategy
 		currentStrategy = new FoamBogStrategy(robot);
 		currentStrategy.start();
 		
@@ -245,14 +252,31 @@ public class MainControl {
 	public static void bluetoothGate() {
 		robot.sonar.continuous();
 		robot.light.setFloodlight(true);
-		
-		//drive up to the gate
+			
+		//drive up to the gate		
+		robot.alignLightMiddle();
+		while (robot.sonar.getDistance() > 20) {
+			if (aborted)
+				return;
+		}
 		
 		//connect and open
+		GateControl gateControl = new GateControl();
+		while (!aborted && 
+				!gateControl.connectionToGateSuccessful(GateCommon.GATE_1)) {
+			if (aborted)
+				return;
+		}
 		
 		//navigate through it until you find a line
 		
 		//follow line until the sonar registers an obstacle
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.OBSTACLE);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
 		
 		turnTable();
 	}
@@ -271,8 +295,15 @@ public class MainControl {
 		//navigate into the table
 		
 		//rotate 4*45° (Hopefully, we end up right
+		//alternatively: rotate yourself 180°
 		
 		//find a line and follow it until we see wood
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.WOOD);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
 		
 		pusher();
 	}
@@ -285,25 +316,47 @@ public class MainControl {
 		robot.sonar.continuous();
 		robot.light.setFloodlight(false);
 		
-		//drive along the wall 'til we bump
-		
-		//rotate right
-		
-		//again, drive along the wall 'til we bump
-		
-		//rotate right
+		//drive along the wall 'til we bump, twice
+		for (int i=0; i<2; i++) {
+			currentStrategy = new LabyrinthStrategy(robot, true,
+					LabyrinthStrategy.BumpResult.HALT);
+			currentStrategy.start();
+			
+			if (aborted)
+				return;
+		}
 		
 		//drive backwards to the button
+		robot.pilot.travel(-20, true);
+		while (!aborted && robot.pilot.isMoving());
 		
-		//drive forward until we see the pusher
+		if (aborted)
+			return;
+		
+		//drive forward until we see the pusher (or accidently passed it)
+		robot.alignLightLeft();
+		robot.pilot.forward();
+		robot.light.setFloodlight(true);
+		while (!aborted && !(robot.sonar.getDistance() < 10) 
+				&& !robot.isLineBeneath());
+		
+		if (aborted)
+			return;
 		
 		//wait until it is free
+		robot.pilot.stop();
+		while (!aborted && robot.sonar.getDistance() < 10);
 		
-		//turn on the light sensor
-		
-		//drive on until we see black
+		if (aborted)
+			return;
 		
 		//follow the line until we see an obstacle (sonar) or wood
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.OBSTACLE);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
 	
 		seesaw();
 	}
@@ -315,7 +368,27 @@ public class MainControl {
 		robot.sonar.off();
 		robot.light.setFloodlight(true);
 		
-		//We use an adapted bridge-crossing strategy
+		robot.pilot.forward();
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted)
+			return;
+		
+		currentStrategy = new BridgeStrategy(robot, true);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.END_OF_THE_LINE);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		if (analyzeLines() == 0)
+			return;
 		
 		plankBridge();
 	}
@@ -327,7 +400,21 @@ public class MainControl {
 		robot.sonar.off();
 		robot.light.setFloodlight(true);
 		
-		//We use an adapted line following algorithm
+		currentStrategy = new PlankBridgePasser(robot);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.END_OF_THE_LINE);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		if (analyzeLines() == 0)
+			return;
 		
 		oppositeLane();
 	}
@@ -341,7 +428,15 @@ public class MainControl {
 		robot.sonar.continuous();
 		robot.light.setFloodlight(true);
 		
-		//Follow the line and react to obstacles
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.END_OF_THE_LINE);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		if (analyzeLines() == 0)
+			return;
 		
 		colorChooser();
 	}
@@ -367,5 +462,7 @@ public class MainControl {
 	public static void endBoss() {
 		robot.sonar.continuous();
 		robot.light.setFloodlight(false);
+		
+		//do some bullshit here
 	}
 }

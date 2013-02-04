@@ -34,7 +34,7 @@ public class Robot {
 		
 //		pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor,
 //				rightMotor);
-		pilot = new DifferentialPilot(3.65f , 11.3f, leftMotor, rightMotr);
+		pilot = new DifferentialPilot(3.65f , 11.3f, leftMotor, rightMotor);
 		
 		leftMaxJokerAngle = -90;
 		rightMaxJokerAngle = 90;

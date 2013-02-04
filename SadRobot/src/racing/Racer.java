@@ -30,6 +30,8 @@ public class Racer extends Strategy
 		else if (leftDistance == 255)	regularDistance = rightDistance;
 		else if (rightDistance == 255)	regularDistance = leftDistance;
 		else	regularDistance = (leftDistance + rightDistance) / 2;
+
+		System.out.println("distance " + Integer.toString(regularDistance));
 		
 		if (leftDistance < rightDistance)
 			robot.joker.rotateTo(robot.getLeftJoker() + 20);

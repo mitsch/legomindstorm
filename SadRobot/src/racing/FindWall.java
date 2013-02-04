@@ -29,7 +29,8 @@ public class FindWall extends StrategyBehavior {
 
 		int distance = robot.sonar.getDistance();
 		if (distance == 255) {
-			robot.pilot.rotate(180);
+			robot.pilot.rotate(360);
+//			while (!robot.leftTouch.isPressed());
 		} else {
 			Racer.regularDistance = distance;
 		}

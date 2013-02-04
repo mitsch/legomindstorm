@@ -3,6 +3,7 @@ import bridgePasser.BridgeStrategy;
 import labyrinth.LabyrinthStrategy;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lejos.util.Delay;
 import lineFollowing.LineFollower;
 import common.GateCommon;
 import common.GateControl;
@@ -118,7 +119,7 @@ public class MainControl {
 	public static void startProgram(int lines) {
 		switch (lines) {
 			case 1:
-				race();
+				race(true);
 				break;
 			case 2:
 				bridge();
@@ -154,34 +155,50 @@ public class MainControl {
 	 * We need a head start to win... Go, go, GO!
 	 */
 	public static void start() {
-		//We don't need no light sensor.
-		robot.light.setFloodlight(false);
-		robot.sonar.off();
+		robot.sonar.continuous();
+		
+		Delay.msDelay(5000);
+		robot.joker.rotateTo(robot.getLeftJoker(), true);
+		Delay.msDelay(5000);
 		
 		robot.pilot.forward();
+		int distance = robot.sonar.getDistance();
+		boolean leftWall = true;
 		while (!robot.isLineBeneath()) {
+			if (robot.sonar.getDistance() - distance > 20)
+				leftWall = false;
+			
 			if (aborted)
 				return;
 		}	
+		
+		if (!leftWall) {
+			currentStrategy = new LabyrinthStrategy(robot, true,
+					LabyrinthStrategy.BumpResult.EVADE);
+			currentStrategy.start();
+			
+			if (aborted)
+				return;
+		}
+		
 		while (robot.isLineBeneath()) {
 			if (aborted)
 				return;
 		}
 		
-		race();
+		race(leftWall);
 	}
 	
 	/**
 	 * The race has begun! We have to take two slalom turns, that's all.
 	 * Oh yeah... There could be other robots in the way...
 	 */
-	public static void race() {	
+	public static void race(boolean leftWall) {	
 		//We start 
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		//We use our labyrinth algorithm to pass this
-		currentStrategy = new LabyrinthStrategy(robot, true,
+		currentStrategy = new LabyrinthStrategy(robot, leftWall,
 				LabyrinthStrategy.BumpResult.EVADE);
 		currentStrategy.start();
 		
@@ -189,7 +206,8 @@ public class MainControl {
 			return;
 		
 		//now we are on the first line of the bridge barcode
-		//TODO: while (!wood)
+		analyzeLines();
+
 		bridge();
 	}
 	
@@ -199,14 +217,24 @@ public class MainControl {
 	 * or just in the process of falling off.
 	 */
 	public static void bridge() {
-		robot.sonar.off();
-		robot.light.setFloodlight(true);
+		robot.sonar.continuous();
 		
-		currentStrategy  = new BridgeStrategy(robot, false);	
+		//navigate on to the bridge
+		currentStrategy = new LabyrinthStrategy(robot, false,
+				LabyrinthStrategy.BumpResult.EVADE,
+				LabyrinthStrategy.AbortCondition.WOOD);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		currentStrategy = new BridgeStrategy(robot, false);	
 		currentStrategy.start();	
 		
 		if (aborted)
 			return;
+		
+		analyzeLines();
 		
 		labyrinth();
 	}
@@ -217,7 +245,6 @@ public class MainControl {
 	 */
 	public static void labyrinth() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		currentStrategy = new LabyrinthStrategy(robot, true,
 				LabyrinthStrategy.BumpResult.TURN);
@@ -225,6 +252,8 @@ public class MainControl {
 		
 		if (aborted)
 			return;
+		
+		analyzeLines();
 		
 		foamBog();
 	}
@@ -234,7 +263,6 @@ public class MainControl {
 	 */
 	public static void foamBog() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		//We could also simply use the labyrinth strategy
 		currentStrategy = new FoamBogStrategy(robot);
@@ -242,6 +270,8 @@ public class MainControl {
 		
 		if (aborted)
 			return;
+		
+		analyzeLines();
 		
 		bluetoothGate();
 	}
@@ -251,7 +281,6 @@ public class MainControl {
 	 */
 	public static void bluetoothGate() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 			
 		//drive up to the gate		
 		robot.alignLightMiddle();
@@ -269,14 +298,7 @@ public class MainControl {
 		}
 		
 		//navigate through it until you find a line
-		
-		//follow line until the sonar registers an obstacle
-		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.OBSTACLE);
-		currentStrategy.start();
-		
-		if (aborted)
-			return;
+		robot.pilot.forward();	
 		
 		turnTable();
 	}
@@ -290,7 +312,16 @@ public class MainControl {
 	 */
 	public static void turnTable() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
+		
+		//follow line until the sonar registers an obstacle
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.OBSTACLE);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
+		
+		//ask the bluetooth to enter the table
 		
 		//navigate into the table
 		
@@ -299,7 +330,7 @@ public class MainControl {
 		
 		//find a line and follow it until we see wood
 		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.WOOD);
+				LineFollower.AbortCondition.END_OF_THE_LINE);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -314,7 +345,6 @@ public class MainControl {
 	 */
 	public static void pusher() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(false);
 		
 		//drive along the wall 'til we bump, twice
 		for (int i=0; i<2; i++) {
@@ -336,7 +366,6 @@ public class MainControl {
 		//drive forward until we see the pusher (or accidently passed it)
 		robot.alignLightLeft();
 		robot.pilot.forward();
-		robot.light.setFloodlight(true);
 		while (!aborted && !(robot.sonar.getDistance() < 10) 
 				&& !robot.isLineBeneath());
 		
@@ -366,7 +395,6 @@ public class MainControl {
 	 */
 	public static void seesaw() {
 		robot.sonar.off();
-		robot.light.setFloodlight(true);
 		
 		robot.pilot.forward();
 		while (!aborted && robot.pilot.isMoving());
@@ -398,7 +426,6 @@ public class MainControl {
 	 */
 	public static void plankBridge() {
 		robot.sonar.off();
-		robot.light.setFloodlight(true);
 		
 		currentStrategy = new PlankBridgePasser(robot);
 		currentStrategy.start();
@@ -426,7 +453,6 @@ public class MainControl {
 	 */
 	public static void oppositeLane() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		currentStrategy = new LineFollower(robot,
 				LineFollower.AbortCondition.END_OF_THE_LINE);
@@ -448,7 +474,6 @@ public class MainControl {
 	 */
 	public static void colorChooser() {	
 		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		//ask the bluetooth gate for a color
 		
@@ -458,11 +483,17 @@ public class MainControl {
 	
 	/**
 	 * Since we know nothing about this, there is only one goal: SURVIVAL!
+	 * EDIT: The endboss will be some robot with a claw, trying to overthrow
+	 * this robots. Hopefully, we are heavy enough.
 	 */
 	public static void endBoss() {
 		robot.sonar.continuous();
-		robot.light.setFloodlight(false);
 		
-		//do some bullshit here
+		currentStrategy = new LabyrinthStrategy(robot, true,
+				LabyrinthStrategy.BumpResult.TURN);
+		currentStrategy.start();
+		
+		if (aborted)
+			return;
 	}
 }

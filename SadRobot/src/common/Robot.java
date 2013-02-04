@@ -1,6 +1,8 @@
 package common;
 
 
+import common.color.Color;
+
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
@@ -41,28 +43,14 @@ public class Robot {
 		calibrateJoker();
 	}
 	
-	public int getLineValue() {
-		return 46;
-	}
-	
-	public int getWoodValue() {
-		return 37;
-	}
-	
-	public int getFallValue() {
-		return 28;
-	}
-	
-	public int getBlackValue() {
-		return 26;
-	}
+
 	
 	public boolean isLineBeneath() {
-		return light.readValue() > (getLineValue() + getBlackValue())/2;
+		return light.readValue() > (Color.SILVER.avg() + Color.BLACK.avg())/2;
 	}
 	
 	public boolean isFallBeneath() {
-		return light.readValue() < (getWoodValue() + getFallValue())/2;
+		return light.readValue() < (Color.BROWN_DARK.avg() + Color.ABYSS.avg())/2;
 	}
 	
 	public void alignLightLeft() {

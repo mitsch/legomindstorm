@@ -4,6 +4,7 @@ import common.Robot;
 import common.Strategy;
 import racing.FollowWall;
 import racing.FindWall;
+import racing.MakeTurn;
 
 import lejos.nxt.Sound;
 import lejos.util.Delay;
@@ -12,32 +13,36 @@ import lejos.robotics.subsumption.Behavior;
 
 public class Racer extends Strategy
 {
-	public static int regularDistance;
+	public static int regularDistance = 38;
+	public static int angleOffsetJoker = 10;
 	
 	public Racer(Robot robot) {
+		MakeTurn makeTurn = new MakeTurn(robot, this);
 		FollowWall followWall = new FollowWall(robot, this);
-		FindWall findWall = new FindWall(robot, this);
-		Behavior [] behaviours = {followWall, findWall};
+		Behavior [] behaviours = {followWall, makeTurn};
 
 		arbitrator = new Arbitrator(behaviours, true);		
-
-		robot.joker.rotateTo(robot.getLeftJoker());
-		int leftDistance = robot.sonar.getDistance();
+/*
 		robot.joker.rotateTo(robot.getRightJoker());
-		int rightDistance = robot.sonar.getDistance();
+		int positionOfShortestDistance = robot.getRightJoker();
+		regularDistance = 255;
+		robot.joker.setSpeed(15);
+		robot.joker.rotate(-15, true);
+		while (robot.joker.isMoving()) {
+			int distance = robot.sonar.getDistance();
+			int position = robot.joker.getPosition();
+			if (distance < regularDistance) {
+				positionOfShortestDistance = position;
+				regularDistance = distance;
+			}
+		}
 
-		if (leftDistance == 255 && rightDistance == 255)	regularDistance = 50;
-		else if (leftDistance == 255)	regularDistance = rightDistance;
-		else if (rightDistance == 255)	regularDistance = leftDistance;
-		else	regularDistance = (leftDistance + rightDistance) / 2;
-
-		System.out.println("distance " + Integer.toString(regularDistance));
+		System.out.println(Integer.toString(regularDistance));
+		robot.joker.rotateTo(positionOfShortestDistance);
+*/
+		robot.joker.rotateTo(robot.getRightJoker() - angleOffsetJoker);
 		
-		if (leftDistance < rightDistance)
-			robot.joker.rotateTo(robot.getLeftJoker() + 20);
-		else
-			robot.joker.rotateTo(robot.getRightJoker() - 20);
-		
+		robot.pilot.setTravelSpeed(robot.pilot.getMaxTravelSpeed());
 		robot.pilot.forward();
 	}
 }

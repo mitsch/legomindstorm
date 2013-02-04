@@ -17,7 +17,7 @@ public class FollowWall extends StrategyBehavior {
 	public FollowWall(Robot robot, Strategy parent) {
 		super(parent);
 		this.robot = robot;
-		this.seriousDistanceDrop = 5;
+		this.seriousDistanceDrop = 20;
 		this.distance = Racer.regularDistance;
 	}
 
@@ -26,13 +26,13 @@ public class FollowWall extends StrategyBehavior {
 		distance = robot.sonar.getDistance();
 		//return distance != 255 && Math.abs(distance - Racer.regularDistance) < seriousDistanceDrop;
 		// return distance != 255;
-		return true;
+		return Math.abs(distance - Racer.regularDistance) < seriousDistanceDrop;
 	}
 
 	@Override
 	public void work() {
 		int deltaDistance = distance - Racer.regularDistance;
-		int factor = robot.getMiddleJoker() > robot.joker.getPosition() ? 1 : -1;
+		int factor = robot.getMiddleJoker() > robot.joker.getPosition() ? 3 : -5;
 
 		System.out.println("correct to " + Integer.toString(factor * deltaDistance));
 		robot.pilot.steer(factor *  deltaDistance);

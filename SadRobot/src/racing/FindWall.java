@@ -20,11 +20,13 @@ public class FindWall extends StrategyBehavior {
 	}
 
 	public void work() {
+		robot.pilot.setTravelSpeed(0.5 * robot.pilot.getTravelSpeed());
+
 		int jokerPosition = robot.joker.getPosition();
 		if (jokerPosition > robot.getMiddleJoker()) {
-			robot.joker.rotateTo(robot.getLeftJoker() + 20);
+			robot.joker.rotateTo(robot.getLeftJoker() + Racer.angleOffsetJoker);
 		} else {
-			robot.joker.rotateTo(robot.getRightJoker() - 20);
+			robot.joker.rotateTo(robot.getRightJoker() - Racer.angleOffsetJoker);
 		}
 
 		int distance = robot.sonar.getDistance();
@@ -33,6 +35,7 @@ public class FindWall extends StrategyBehavior {
 //			while (!robot.leftTouch.isPressed());
 		} else {
 			Racer.regularDistance = distance;
+			robot.pilot.setTravelSpeed(robot.pilot.getMaxTravelSpeed());
 		}
 	}
 

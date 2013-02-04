@@ -24,11 +24,11 @@ public enum Color {
 	 */
 	SILVER(45,46,47),
 	/**
-	 * Brücke (dunkel).
+	 * Bruecke (dunkel).
 	 */
 	BROWN_DARK(36,37,38),
 	/**
-	 * Brücke (hell).
+	 * Bruecke (hell).
 	 */
 	BROWN_LIGHT(35,36,37), 
 	/**
@@ -38,7 +38,7 @@ public enum Color {
 	
 	//FARBFELD
 	/**
-	 * Grün auf Farbfeld.
+	 * Gruen auf Farbfeld.
 	 */
 	GREEN(100,100,100), 
 	/**

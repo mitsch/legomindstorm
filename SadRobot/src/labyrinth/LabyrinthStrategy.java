@@ -21,7 +21,7 @@ public class LabyrinthStrategy extends Strategy {
 		Behavior[] behaviors = {driveAlongWall, bumper, lineRec};
 		
 		//Load the behaviors into an arbitrator
-		arbitrator = new Arbitrator(behaviors);
+		arbitrator = new Arbitrator(behaviors, true);
 		
 		if (sonarLeft)
 			robot.alignLightLeft();

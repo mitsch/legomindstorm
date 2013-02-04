@@ -30,9 +30,6 @@ public class FindOrientation implements Behavior {
 	}
 
 	@Override
-	public void suppress() {
-		suppressed = true;
-	}
-
+	public void supp
 }
 

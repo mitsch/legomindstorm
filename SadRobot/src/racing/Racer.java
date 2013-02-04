@@ -1,25 +1,42 @@
 package racing;
 
 import common.Robot;
+import common.Strategy;
+import racing.FollowWall;
+import racing.FindWall;
 
+import lejos.nxt.Sound;
+import lejos.util.Delay;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-public class Racer
+public class Racer extends Strategy
 {
-	private Arbitrator racer;
 	public static int regularDistance;
 	
 	public Racer(Robot robot) {
-		Behavior followWall = new FollowWall(robot);
-		Behavior [] behaviours = {followWall};
+		FollowWall followWall = new FollowWall(robot, this);
+		FindWall findWall = new FindWall(robot, this);
+		Behavior [] behaviours = {followWall, findWall};
 
-		racer = new Arbitrator(behaviours, true);
-	}
+		arbitrator = new Arbitrator(behaviours, true);		
 
+		robot.joker.rotateTo(robot.getLeftJoker());
+		int leftDistance = robot.sonar.getDistance();
+		robot.joker.rotateTo(robot.getRightJoker());
+		int rightDistance = robot.sonar.getDistance();
 
-	public void go() {
-		racer.start();
+		if (leftDistance == 255 && rightDistance == 255)	regularDistance = 50;
+		else if (leftDistance == 255)	regularDistance = rightDistance;
+		else if (rightDistance == 255)	regularDistance = leftDistance;
+		else	regularDistance = (leftDistance + rightDistance) / 2;
+		
+		if (leftDistance < rightDistance)
+			robot.joker.rotateTo(robot.getLeftJoker() + 20);
+		else
+			robot.joker.rotateTo(robot.getRightJoker() - 20);
+		
+		robot.pilot.forward();
 	}
 }
 

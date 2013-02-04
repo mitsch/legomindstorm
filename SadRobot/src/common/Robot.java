@@ -34,8 +34,9 @@ public class Robot {
 		sonar = new UltrasonicSensor(SensorPort.S3);
 		light = new LightSensor(SensorPort.S2);
 		
-		pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor,
-				rightMotor);
+//		pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor,
+//				rightMotor);
+		pilot = new DifferentialPilot(3.65f , 11.3f, leftMotor, rightMotor);
 		
 		leftMaxJokerAngle = -90;
 		rightMaxJokerAngle = 90;

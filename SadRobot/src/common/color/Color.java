@@ -24,13 +24,9 @@ public enum Color {
 	 */
 	SILVER(45,46,47),
 	/**
-	 * Bruecke (dunkel).
+	 * Bruecke.
 	 */
-	BROWN_DARK(36,37,38),
-	/**
-	 * Bruecke (hell).
-	 */
-	BROWN_LIGHT(35,36,37), 
+	BROWN(36,37,38),
 	/**
 	 * Sumpf.
 	 */

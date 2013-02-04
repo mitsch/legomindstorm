@@ -37,8 +37,6 @@ public class Robot {
 		// This is our new ColorSensor! Its used insted of the LightSensor.
 		color = new ColorSensor(SensorPort.S2);
 		
-		
-		
 		////  pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor, rightMotor);
 		pilot = new DifferentialPilot(3.65f , 26.f, leftMotor, rightMotor);
 		
@@ -47,6 +45,10 @@ public class Robot {
 		
 		calibrateJoker();
 	}	
+	
+	public boolean isLineBeneath() {
+		return color.getColor(Color.BLACK, Color.SILVER) == Color.SILVER;
+	}
 
 	public void alignLightLeft() {
 		joker.rotateTo(leftMaxJokerAngle);

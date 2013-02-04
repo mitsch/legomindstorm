@@ -8,18 +8,22 @@ import common.Strategy;
 
 public class LabyrinthStrategy extends Strategy {	
 	public enum BumpResult {TURN, EVADE, HALT};
-	public static boolean sonarLeft = true;
-	
-	
+	public enum AbortCondition {LINE, WOOD};
+	public static boolean sonarLeft = true;	
 	
 	public LabyrinthStrategy(Robot robot, boolean sonarLeft,
 			BumpResult bump) {
+		this(robot, sonarLeft, bump, AbortCondition.LINE);
+	}
+	
+	public LabyrinthStrategy(Robot robot, boolean sonarLeft,
+			BumpResult bump, AbortCondition abort) {
 		LabyrinthStrategy.sonarLeft = sonarLeft;
 				
 		//Prepare behaviors
 		Behavior driveAlongWall = new Drive(robot, this);
 		Behavior bumper = new Bumper(robot, bump, this);
-		Behavior lineRec = new RecognizeLine(robot, this);
+		Behavior lineRec = new RecognizeLine(robot, abort, this);
 		
 		Behavior[] behaviors = {driveAlongWall, bumper, lineRec};
 		

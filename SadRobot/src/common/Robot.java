@@ -2,6 +2,7 @@ package common;
 
 
 import common.color.Color;
+import common.color.ColorOracle.Strength;
 
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
@@ -36,6 +37,7 @@ public class Robot {
 		
 		// This is our new ColorSensor! Its used insted of the LightSensor.
 		color = new ColorSensor(SensorPort.S2);
+		color.setStrength(Strength.WEAK);
 		
 		////  pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor, rightMotor);
 		pilot = new DifferentialPilot(3.65f , 26.f, leftMotor, rightMotor);

@@ -27,6 +27,7 @@ public class MainControl {
 	 * so we will know when the race begins.
 	 */
 	public static void main(String[] args) {	
+		Delay.msDelay(2000);
 		MainControl.robot = new Robot();
 		
 		//Since the rule committee wants it so, we react to our Enter-Button
@@ -49,6 +50,7 @@ public class MainControl {
 					}
 					mode = Mode.WAIT_FOR_BARCODE;
 					aborted = true;
+					robot.pilot.stop();
 					break;
 				case WAIT_FOR_BARCODE:
 					//If we were just waiting to reenter the race, we have a
@@ -71,6 +73,7 @@ public class MainControl {
 	 * before.
 	 */
 	public static void startNextLevel() {
+		Delay.msDelay(2000);
 		int lines = analyzeLines();
 		if (lines == 0)
 			return;
@@ -86,15 +89,16 @@ public class MainControl {
 		//we find the first line
 		robot.pilot.forward();
 		int lineCount = 0;
-		while (robot.isLineBeneath()) {
+		while (!robot.isLineBeneath()) {
 			if (aborted)
 				return 0;
 		}
 		
 		//now we count them
 		while (robot.isLineBeneath()) {
+			System.out.println(lineCount);
 			lineCount++;
-			robot.pilot.travel(20, true);
+			robot.pilot.travel(15, true);
 			//we have to leave the current line, cross the void, and enter the
 			//next line
 			while (robot.pilot.isMoving() && robot.isLineBeneath()) {

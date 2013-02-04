@@ -3,6 +3,7 @@ package bridgePasser;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
 import lejos.nxt.Sound;
 
@@ -16,8 +17,8 @@ public class LineRecognizer extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return robot.light.readValue() > (robot.getLineValue()
-				+ robot.getWoodValue()) / 2;
+		return robot.light.readValue() > (Color.SILVER.avg()
+				+ Color.BROWN_DARK.avg()) / 2;
 	}
 
 	@Override

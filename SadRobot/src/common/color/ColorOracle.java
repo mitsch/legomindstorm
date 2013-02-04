@@ -6,67 +6,106 @@ import java.util.List;
 
 public class ColorOracle {
 
-	private static final Color decide(int value, Color[] options, boolean force) {
+	public static final Color determineColor(final int value) {
+
+		return ColorOracle.determineColor(value, true);
+
+	}
+
+	public static final Color determineColor(final int value, final boolean hard) {
+
+		return ColorOracle.determineColor(value, hard, Color.values());
+
+	}
+
+	public static final Color determineColor(final int value,
+			final Color... options) {
+
+		return ColorOracle.determineColor(value, false, options);
+
+	}
+
+	public static final Color determineColor(final int value,
+			final boolean hard, final Color... options) {
+
+		if (hard) {
+			return ColorOracle.decideHARD(value, options);
+		} else {
+			return ColorOracle.decideWEAK(value, options);
+		}
+	}
+
+	private static final Color decideHARD(int value, Color[] options) {
 
 		Color outcome = Color.UNDEFINED;
 
-		List<Integer> distances = new LinkedList<Integer>();
 		List<Color> colors = new LinkedList<Color>();
 
 		for (Color color : options) {
 			if (color.isComprised(value)) {
-
-				distances.add(Math.abs(color.avg() - value));
 				colors.add(color);
 			}
 		}
 
-		if (distances.size() > 0) {
-
-			
-			
-			
-			if (distances.size() == 1) {
-				// TODO
-			} else {
-
-				Collections.min(distances);
-
-				Collections.max(distances);
-
-			}
-
-		}else{
-			
-			// Keine Entscheidung.
-			
-			
+		if (colors.size() == 1) {
+			outcome = colors.get(0);
 		}
 
 		return outcome;
 	}
 
-	public static final Color determineColor(int value) {
+	private static final Color decideWEAK(int value, Color[] options) {
 
-		return ColorOracle.decide(value, Color.values(), false);
+		Color outcomeHARD = decideHARD(value, options);
 
-	}
+		if (outcomeHARD != Color.UNDEFINED) {
 
-	public static final Color determineColor(int value, boolean force) {
+			return outcomeHARD;
 
-		return ColorOracle.decide(value, Color.values(), force);
+		} else {
 
-	}
+			// WEAK
 
-	public static final Color determineColor(int value, Color... options) {
+			List<Integer> distMIN = new LinkedList<Integer>();
+			List<Integer> distMAX = new LinkedList<Integer>();
 
-		return ColorOracle.decide(value, options, false);
-	}
+			List<Color> colors = new LinkedList<Color>();
 
-	public static final Color determineColor(int value, boolean force,
-			Color... options) {
-		
-		return ColorOracle.decide(value, options, force);
+			for (Color color : options) {
+				if (color.isComprised(value)) {
+					distMIN.add(Math.abs(color.min() - value));
+					distMAX.add(Math.abs(color.max() - value));
+					colors.add(color);
+				}
+			}
+
+			int min = Collections.min(distMIN);
+			int max = Collections.min(distMAX);
+
+			if (min != max) {
+
+				List<Integer> direction = null;
+				Integer distance = 0;
+
+				if (min < max) {
+					direction = distMIN;
+					distance = min;
+				} else {
+					// max < min
+					direction = distMAX;
+					distance = max;
+				}
+
+				if (Collections.frequency(direction, distance) == 1) {
+				
+					return colors.get(direction.indexOf(direction));
+				}
+
+			}
+
+			return Color.UNDEFINED;
+
+		}
 	}
 
 }

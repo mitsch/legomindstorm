@@ -118,34 +118,37 @@ public class MainControl {
 	 */
 	public static void startProgram(int lines) {
 		switch (lines) {
-			case 1:
-				race(true);
+			case 13:
+				start();
 				break;
-			case 2:
+			case 5:
 				bridge();
 				break;
-			case 3:
+			case 7:
 				labyrinth();
 				break;
 			case 4:
+				foamBog();
+				break;
+			case 3:
 				bluetoothGate();
 				break;
-			case 5:
+			case 11:
 				turnTable();
 				break;
-			case 6:
+			case 12:
 				pusher();
 				break;
-			case 7:
+			case 10:
 				seesaw();
 				break;
-			case 8:
+			case 6:
 				plankBridge();
 				break;
 			case 9:
 				oppositeLane();
 				break;
-			case 10:
+			case 8:
 				colorChooser();
 				break;
 		}

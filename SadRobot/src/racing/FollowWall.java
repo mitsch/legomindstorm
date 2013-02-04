@@ -25,7 +25,8 @@ public class FollowWall extends StrategyBehavior {
 	public boolean wantsToWork() {
 		distance = robot.sonar.getDistance();
 		//return distance != 255 && Math.abs(distance - Racer.regularDistance) < seriousDistanceDrop;
-		return distance != 255;
+		// return distance != 255;
+		return true;
 	}
 
 	@Override

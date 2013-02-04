@@ -17,13 +17,11 @@ public class LineRecognizer extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return robot.light.readValue() > (Color.SILVER.avg()
-				+ Color.BROWN_DARK.avg()) / 2;
+		return robot.sonar.getDistance() < 30;
 	}
 
 	@Override
 	public void work() {
 		parent.stop();
-		Sound.beepSequenceUp();
 	}
 }

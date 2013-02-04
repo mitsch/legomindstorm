@@ -3,6 +3,7 @@ package bridgePasser;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
 public class AvoidFall extends StrategyBehavior {
 	private Robot robot;
@@ -16,7 +17,7 @@ public class AvoidFall extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return robot.isFallBeneath();
+		return robot.color.getColor(Color.ABYSS, Color.BROWN) == Color.ABYSS;
 	}
 
 	@Override

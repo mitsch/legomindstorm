@@ -228,9 +228,7 @@ public class MainControl {
 		if (aborted)
 			return;
 		
-		robot.sonar.off();
-		
-		currentStrategy = new BridgeStrategy(robot, true);	
+		currentStrategy = new BridgeStrategy(robot, false);	
 		currentStrategy.start();	
 		
 		if (aborted)
@@ -490,7 +488,6 @@ public class MainControl {
 	 */
 	public static void endBoss() {
 		robot.sonar.continuous();
-		//do some bullshit here
 		
 		currentStrategy = new LabyrinthStrategy(robot, true,
 				LabyrinthStrategy.BumpResult.TURN);

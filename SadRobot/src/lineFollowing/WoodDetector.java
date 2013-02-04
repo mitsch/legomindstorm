@@ -3,9 +3,14 @@ package lineFollowing;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
 public class WoodDetector extends StrategyBehavior {
 	private Robot robot;
+	
+	private boolean isWoodBeneath(){
+		return (Color.BROWN_DARK == this.robot.color.getColor(Color.BLACK, Color.SILVER, Color.BROWN_DARK));
+	}
 	
 	public WoodDetector(Robot robot, Strategy parent) {
 		super(parent);
@@ -14,7 +19,7 @@ public class WoodDetector extends StrategyBehavior {
 
 	@Override
 	protected boolean wantsToWork() {
-		return robot.isLineBeneath();
+		return this.isWoodBeneath();
 	}
 
 	@Override

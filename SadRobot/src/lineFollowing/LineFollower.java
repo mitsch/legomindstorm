@@ -1,16 +1,18 @@
 package lineFollowing;
 
-import common.Robot;
-import common.Strategy;
-
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
+
+import common.Robot;
+import common.Strategy;
 
 public class LineFollower extends Strategy {
 	public enum AbortCondition {OBSTACLE, WOOD, END_OF_THE_LINE};
 	public static int lineCurvature = 0;
 	
+	
 	public LineFollower(Robot robot, AbortCondition abort) {
+		
 		Behavior followLine = new FollowLine(robot, this);
 		Behavior findLine = new FindLine(robot,
 				abort == AbortCondition.END_OF_THE_LINE, this);

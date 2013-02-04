@@ -14,7 +14,8 @@ import lejos.robotics.navigation.DifferentialPilot;
 public class Robot {
 	public TouchSensor leftTouch, rightTouch;
 	public UltrasonicSensor sonar;
-	public LightSensor light;
+	
+	public ColorSensor color;
 	
 	public NXTRegulatedMotor leftMotor, rightMotor;
 	public NXTRegulatedMotor joker;
@@ -32,7 +33,11 @@ public class Robot {
 		leftTouch = new TouchSensor(SensorPort.S4);
 		rightTouch = new TouchSensor(SensorPort.S1);
 		sonar = new UltrasonicSensor(SensorPort.S3);
-		light = new LightSensor(SensorPort.S2);
+		
+		// This is our new ColorSensor! Its used insted of the LightSensor.
+		color = new ColorSensor(SensorPort.S2);
+		
+		
 		
 		////  pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor, rightMotor);
 		pilot = new DifferentialPilot(3.65f , 26.f, leftMotor, rightMotor);
@@ -41,18 +46,8 @@ public class Robot {
 		rightMaxJokerAngle = 90;
 		
 		calibrateJoker();
-	}
-	
+	}	
 
-	
-	public boolean isLineBeneath() {
-		return light.readValue() > (Color.SILVER.avg() + Color.BLACK.avg())/2;
-	}
-	
-	public boolean isFallBeneath() {
-		return light.readValue() < (Color.BROWN_DARK.avg() + Color.ABYSS.avg())/2;
-	}
-	
 	public void alignLightLeft() {
 		joker.rotateTo(leftMaxJokerAngle);
 	}

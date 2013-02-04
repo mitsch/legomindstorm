@@ -3,24 +3,39 @@ package lineFollowing;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
+import common.color.ColorOracle;
 
 public class FindLine extends StrategyBehavior {
 	private Robot robot;
 	private boolean lastHeadingLeft;
 	private boolean detectEndOfLine;
 	
+	
+	private boolean isLineBeneath(){
+		return (Color.SILVER == this.robot.color.getColor(Color.BLACK, Color.SILVER));
+	}
+	
 	public FindLine(Robot robot, boolean detectEndOfLine, Strategy parent) {
 		super(parent);
+		
 		this.robot = robot;
 		this.lastHeadingLeft = true;
 		this.detectEndOfLine = detectEndOfLine;
 	}
 
+	/**
+	 * Wants to work if line is NOT beneath.
+	 */
 	@Override
 	public boolean wantsToWork() {
-		return !robot.isLineBeneath();
+		
+		return !this.isLineBeneath();
 	}
-
+	
+	/**
+	 * This is what it wants to do if the line is NOT beneath.
+	 */
 	@Override
 	public void work() {
 		//find line by rotating a bit to the right and left	
@@ -32,8 +47,9 @@ public class FindLine extends StrategyBehavior {
 			sign = 1;
 		else
 			sign = -1;
-		
-		while (!suppressed && !robot.isLineBeneath()) {
+		// 		while (!suppressed && !robot.isLineBeneath()) {
+
+		while (!suppressed && !this.isLineBeneath()) {
 			//if we would rotate too far
 			//TODO: react to end of line
 			if (turn >= 180) {
@@ -45,13 +61,13 @@ public class FindLine extends StrategyBehavior {
 				}
 				break;
 			} else {
-				for (int i=0; i<2 && !suppressed && !robot.isLineBeneath(); i++) {	
+				for (int i=0; i<2 && !suppressed && !this.isLineBeneath(); i++) {	
 					robot.pilot.rotate(-currentHeading + sign*turn, true);
-					while (!suppressed && !robot.isLineBeneath() && robot.pilot.isMoving());	
+					while (!suppressed && !this.isLineBeneath() && robot.pilot.isMoving());	
 					robot.pilot.stop();
 					currentHeading = sign*turn;
 				
-					if (!robot.isLineBeneath())
+					if (!this.isLineBeneath())
 						sign *= -1;
 						turn += 20;
 				}

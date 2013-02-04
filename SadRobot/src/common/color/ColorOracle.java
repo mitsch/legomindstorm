@@ -6,32 +6,46 @@ import java.util.List;
 
 public class ColorOracle {
 
+	public enum Strength {
+		WEAK, HARD;
+	}
+
+	/**
+	 * Determine the Color of the given lightvalue.
+	 * 
+	 * @param value
+	 * @return
+	 */
 	public static final Color determineColor(final int value) {
 
-		return ColorOracle.determineColor(value, true);
+		return ColorOracle.determineColor(value, Strength.HARD);
 
 	}
 
-	public static final Color determineColor(final int value, final boolean hard) {
+	public static final Color determineColor(final int value, final Strength strength) {
 
-		return ColorOracle.determineColor(value, hard, Color.values());
+		return ColorOracle.determineColor(value, strength, Color.values());
 
 	}
 
 	public static final Color determineColor(final int value,
 			final Color... options) {
 
-		return ColorOracle.determineColor(value, false, options);
+		return ColorOracle.determineColor(value, Strength.HARD, options);
 
 	}
 
 	public static final Color determineColor(final int value,
-			final boolean hard, final Color... options) {
+			final Strength strength, final Color... options) {
 
-		if (hard) {
-			return ColorOracle.decideHARD(value, options);
-		} else {
+		switch (strength) {
+
+		case WEAK:
 			return ColorOracle.decideWEAK(value, options);
+
+		default:
+		case HARD:
+			return ColorOracle.decideHARD(value, options);
 		}
 	}
 
@@ -97,7 +111,7 @@ public class ColorOracle {
 				}
 
 				if (Collections.frequency(direction, distance) == 1) {
-				
+
 					return colors.get(direction.indexOf(direction));
 				}
 

@@ -3,9 +3,14 @@ package plankBridge;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
 public class Black extends StrategyBehavior {
 	private Robot robot;
+	
+	private boolean isLineBeneath(){
+		return (Color.SILVER == this.robot.color.getColor(Color.BLACK, Color.SILVER));
+	}
 	
 	public Black(Robot robot, Strategy parent) {
 		super(parent);
@@ -14,7 +19,7 @@ public class Black extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return !robot.isLineBeneath();
+		return !this.isLineBeneath();
 	}
 
 	@Override

@@ -216,24 +216,34 @@ public class MainControl {
 	 * or just in the process of falling off.
 	 */
 	public static void bridge(boolean leftWall) {
+		System.out.println("Starting bridge");
 		
 		robot.pilot.travel(10, true);
 		while (!aborted && robot.pilot.isMoving());
 		
 		if (aborted) return;
 		
+		System.out.println("Starting Wall Follower");
+		
 		//navigate on to the bridge
 		currentStrategy = new WallFollower(robot, leftWall,
-				WallFollower.BumpResult.EVADE,
+				WallFollower.BumpResult.NONE,
 				WallFollower.AbortCondition.WOOD);
 		currentStrategy.start();
-		
+			
 		if (aborted) return;
 		
-		currentStrategy = new BridgeStrategy(robot, true);	
+		robot.pilot.travel(10, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		System.out.println("Starting Bridge Crosser");
+		
+		currentStrategy = new BridgeStrategy(robot, false);	
 		currentStrategy.start();	
 		
 		if (aborted) return;
+		
+		System.out.println("Bridge crossed");
 		
 		if (analyzeLines() == -1) return;
 		

@@ -13,9 +13,7 @@ public class DisplayLight {
 		Robot sadRobot = new Robot();
 		
 		while (Button.readButtons() != Button.ID_ESCAPE) {
-			LCD.drawInt(sadRobot.light.getNormalizedLightValue(), 0, 0);
-			LCD.drawInt(sadRobot.light.getLightValue(), 0, 1);
-			LCD.drawInt(sadRobot.light.readValue(), 0, 2);
+			System.out.println(sadRobot.light.readValue());
 		}
 	}
 }

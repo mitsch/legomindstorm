@@ -18,7 +18,6 @@ public class WallFollower extends Strategy {
 	public enum BumpResult {TURN, EVADE, HALT, HALT_AGGRESSIVE, NONE};
 	public enum AbortCondition {COLOR, LINE, WOOD, TIME};
 	public static boolean sonarLeft = true;	
-	public static boolean enteredBog = false;
 	public static Color color;
 	public static long started;
 	

@@ -5,6 +5,12 @@ import common.Strategy;
 import common.StrategyBehavior;
 import common.color.Color;
 
+/**
+ * If we see a bridge below us, we drive in a slight curve.
+ * 
+ * @author Thomas
+ *
+ */
 public class DriveBridge extends StrategyBehavior {
 	private Robot robot;
 	private boolean leftBridge;

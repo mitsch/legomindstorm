@@ -1,9 +1,9 @@
 package bluetoothGate;
 
-import common.GateCommon;
-import common.GateControl;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.gates.GateCommon;
+import common.gates.GateControl;
 
 public class OpenGateBehavior extends StrategyBehavior {
 	

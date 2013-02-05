@@ -4,7 +4,7 @@ import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
 import common.color.Color;
-import labyrinth.LabyrinthStrategy.AbortCondition;
+import labyrinth.WallFollower.AbortCondition;
 
 public class RecognizeLine extends StrategyBehavior {
 	private Robot robot;
@@ -24,7 +24,7 @@ public class RecognizeLine extends StrategyBehavior {
 		case WOOD:
 			return this.robot.color.getColor(Color.BLACK, Color.BROWN, Color.SILVER) == Color.BROWN;
 		case COLOR:
-			return this.robot.color.getColor(Color.RED, Color.YELLOW, Color.GREEN) == LabyrinthStrategy.color;
+			return this.robot.color.getColor(Color.RED, Color.YELLOW, Color.GREEN) == WallFollower.color;
 		}
 		return false;
 	}

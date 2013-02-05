@@ -5,6 +5,12 @@ import common.Strategy;
 import common.StrategyBehavior;
 import common.color.Color;
 
+/**
+ * If we don't see ground below, we turn away.
+ * 
+ * @author Thomas
+ *
+ */
 public class AvoidFall extends StrategyBehavior {
 	private Robot robot;
 	private boolean leftBridge;

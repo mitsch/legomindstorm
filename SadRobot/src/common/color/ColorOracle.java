@@ -96,14 +96,9 @@ public class ColorOracle {
 			List<Integer> distMIN = new LinkedList<Integer>();
 			List<Integer> distMAX = new LinkedList<Integer>();
 
-			List<Color> colors = new LinkedList<Color>();
-
 			for (Color color : options) {
-				if (color.isComprised(value)) {
-					distMIN.add(Math.abs(color.min() - value));
-					distMAX.add(Math.abs(color.max() - value));
-					colors.add(color);
-				}
+				distMIN.add(Math.abs(color.min() - value));
+				distMAX.add(Math.abs(color.max() - value));
 			}
 
 			int min = SimpleCollections.min(distMIN);
@@ -124,16 +119,13 @@ public class ColorOracle {
 				}
 
 				if (SimpleCollections.frequency(direction, distance) == 1) {
-
-					return colors.get(direction.indexOf(direction));
+					return options[direction.indexOf(direction)];
 				}
 
 			}
-
+			
 			return Color.UNDEFINED;
-
 		}
-
 	}
 
 	private static class SimpleCollections {

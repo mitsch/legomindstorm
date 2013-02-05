@@ -4,6 +4,12 @@ import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
 
+/**
+ * Drive. Nothing special.
+ * 
+ * @author Thomas
+ *
+ */
 public class Drive extends StrategyBehavior {
 	private Robot robot;
 	

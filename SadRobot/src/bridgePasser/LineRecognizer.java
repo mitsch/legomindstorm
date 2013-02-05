@@ -3,10 +3,13 @@ package bridgePasser;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
-import common.color.Color;
 
-import lejos.nxt.Sound;
-
+/**
+ * The bridge is crossed, if we see a wall to the left
+ * 
+ * @author Thomas
+ *
+ */
 public class LineRecognizer extends StrategyBehavior {
 	private Robot robot;
 

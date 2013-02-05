@@ -6,6 +6,13 @@ import common.Strategy;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * Because our other line following algorithm has difficulties on the
+ * plank bridge, we use a more naive method.
+ * 
+ * @author Thomas
+ *
+ */
 public class PlankBridgePasser extends Strategy {
 	
 	public PlankBridgePasser(Robot robot) {

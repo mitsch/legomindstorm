@@ -5,6 +5,12 @@ import lejos.robotics.subsumption.Behavior;
 import common.Robot;
 import common.Strategy;
 
+/**
+ * To solve the foambgo, we simply drive over it.
+ * 
+ * @author Thomas
+ *
+ */
 public class FoamBogStrategy extends Strategy {
 	
 	public FoamBogStrategy(Robot robot) {

@@ -6,6 +6,13 @@ import lejos.robotics.subsumption.Behavior;
 import common.Robot;
 import common.Strategy;
 
+/**
+ * Our line follower drives along the line. If he loses the line, he tries
+ * to find it again by swinging left and right.
+ * 
+ * @author Thomas
+ *
+ */
 public class LineFollower extends Strategy {
 	public enum AbortCondition {OBSTACLE, WOOD, END_OF_THE_LINE};
 	public static int lineCurvature = 0;

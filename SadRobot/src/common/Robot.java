@@ -1,6 +1,5 @@
 package common;
 
-
 import common.color.Color;
 import common.color.ColorOracle.Strength;
 
@@ -11,6 +10,13 @@ import lejos.nxt.TouchSensor;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 
+/**
+ * We use this class as a central reference to define sensors, actors and
+ * commonly used methods concerning our robot. 
+ * 
+ * @author Thomas
+ *
+ */
 public class Robot {
 	public TouchSensor leftTouch, rightTouch;
 	public UltrasonicSensor sonar;

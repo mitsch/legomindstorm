@@ -1,24 +1,20 @@
 import plankBridge.PlankBridgePasser;
 import bridgePasser.BridgeStrategy;
-import labyrinth.LabyrinthStrategy;
-import labyrinth.LabyrinthStrategy.AbortCondition;
+import labyrinth.WallFollower;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.util.Delay;
 import lineFollowing.LineFollower;
-import common.GateCommon;
-import common.GateControl;
-import common.ColorGateControl;
 import common.Robot;
 import common.Strategy;
 import common.color.Color;
+import common.gates.ColorGateControl;
+import common.gates.GateCommon;
+import common.gates.GateControl;
 import foamBog.FoamBogStrategy;
 
 public class MainControl {
 	public enum Mode {WAIT_FOR_BARCODE, WAIT_FOR_RACE, RUNNING};
-	public enum Level {RACE, BRIDGE, LABYRINTH, BOG, BLUETOOTH, TURNTABLE,
-		PUSHER, SEESAW, PLANKBRIDGE, OPPOSITE_LANE, COLORS, ENDBOSS
-	}
 	public static Robot robot;
 	public static Mode mode = Mode.WAIT_FOR_BARCODE;
 	public static Strategy currentStrategy = null;
@@ -183,8 +179,8 @@ public class MainControl {
 		}	
 		
 		if (!leftWall) {
-			currentStrategy = new LabyrinthStrategy(robot, true,
-					LabyrinthStrategy.BumpResult.EVADE);
+			currentStrategy = new WallFollower(robot, true,
+					WallFollower.BumpResult.EVADE);
 			currentStrategy.start();
 			
 			if (aborted)
@@ -208,8 +204,8 @@ public class MainControl {
 		robot.sonar.continuous();
 		
 		//We use our labyrinth algorithm to pass this
-		currentStrategy = new LabyrinthStrategy(robot, leftWall,
-				LabyrinthStrategy.BumpResult.EVADE);
+		currentStrategy = new WallFollower(robot, leftWall,
+				WallFollower.BumpResult.EVADE);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -230,9 +226,9 @@ public class MainControl {
 		robot.sonar.continuous();
 		
 		//navigate on to the bridge
-		currentStrategy = new LabyrinthStrategy(robot, false,
-				LabyrinthStrategy.BumpResult.EVADE,
-				LabyrinthStrategy.AbortCondition.WOOD);
+		currentStrategy = new WallFollower(robot, false,
+				WallFollower.BumpResult.EVADE,
+				WallFollower.AbortCondition.WOOD);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -256,8 +252,8 @@ public class MainControl {
 	public static void labyrinth() {
 		robot.sonar.continuous();
 		
-		currentStrategy = new LabyrinthStrategy(robot, true,
-				LabyrinthStrategy.BumpResult.TURN);
+		currentStrategy = new WallFollower(robot, true,
+				WallFollower.BumpResult.TURN);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -358,8 +354,8 @@ public class MainControl {
 		
 		//drive along the wall 'til we bump, twice
 		for (int i=0; i<2; i++) {
-			currentStrategy = new LabyrinthStrategy(robot, true,
-					LabyrinthStrategy.BumpResult.HALT);
+			currentStrategy = new WallFollower(robot, true,
+					WallFollower.BumpResult.HALT);
 			currentStrategy.start();
 			
 			if (aborted)
@@ -511,7 +507,7 @@ public class MainControl {
 			color = Color.GREEN;
 		}
 		
-		currentStrategy = new LabyrinthStrategy(robot, true, color);
+		currentStrategy = new WallFollower(robot, true, color);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -537,8 +533,8 @@ public class MainControl {
 		if (aborted)
 			return;
 		
-		currentStrategy = new LabyrinthStrategy(robot, true, LabyrinthStrategy.BumpResult.EVADE,
-				LabyrinthStrategy.AbortCondition.LINE);
+		currentStrategy = new WallFollower(robot, true, WallFollower.BumpResult.EVADE,
+				WallFollower.AbortCondition.LINE);
 		currentStrategy.start();
 		
 		if (aborted)
@@ -555,8 +551,8 @@ public class MainControl {
 	public static void endBoss() {
 		robot.sonar.continuous();
 		
-		currentStrategy = new LabyrinthStrategy(robot, true,
-				LabyrinthStrategy.BumpResult.TURN);
+		currentStrategy = new WallFollower(robot, true,
+				WallFollower.BumpResult.TURN);
 		currentStrategy.start();
 		
 		if (aborted)

@@ -3,9 +3,9 @@ package testing;
 import lejos.nxt.Button;
 import lejos.nxt.Sound;
 import lejos.util.Delay;
-import common.GateControl;
-import common.GateCommon;
 import common.Robot;
+import common.gates.GateCommon;
+import common.gates.GateControl;
 
 public class GateTester {
 

@@ -4,6 +4,12 @@ import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
 
+/**
+ * If we bump into something, we have passed the foam bog.
+ * 
+ * @author Thomas
+ *
+ */
 public class Bumper extends StrategyBehavior {
 	private Robot robot;
 	

@@ -6,6 +6,14 @@ import common.Robot;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * Using this strategy, we cross the bridge by tagging along the edge.
+ * If the light sensor is over the edge, we turn.
+ * If not, we drive in a slight curve.
+ * 
+ * @author Thomas
+ *
+ */
 public class BridgeStrategy  extends Strategy {
 	
 	public BridgeStrategy(Robot robot, boolean leftBridge) {

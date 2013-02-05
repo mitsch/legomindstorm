@@ -7,25 +7,32 @@ import common.Robot;
 import common.Strategy;
 import common.color.Color;
 
-public class LabyrinthStrategy extends Strategy {	
+/**
+ * Our labyrinth strategy tags along a wall until we find the end of the
+ * labyrinth.
+ * 
+ * @author Thomas
+ *
+ */
+public class WallFollower extends Strategy {	
 	public enum BumpResult {TURN, EVADE, HALT};
 	public enum AbortCondition {COLOR, LINE, WOOD};
 	public static boolean sonarLeft = true;	
 	public static Color color;
 	
-	public LabyrinthStrategy(Robot robot, boolean sonarLeft, Color color) {
+	public WallFollower(Robot robot, boolean sonarLeft, Color color) {
 		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.COLOR);
-		LabyrinthStrategy.color = color;
+		WallFollower.color = color;
 	}
 	
-	public LabyrinthStrategy(Robot robot, boolean sonarLeft,
+	public WallFollower(Robot robot, boolean sonarLeft,
 			BumpResult bump) {
 		this(robot, sonarLeft, bump, AbortCondition.LINE);
 	}
 	
-	public LabyrinthStrategy(Robot robot, boolean sonarLeft,
+	public WallFollower(Robot robot, boolean sonarLeft,
 			BumpResult bump, AbortCondition abort) {
-		LabyrinthStrategy.sonarLeft = sonarLeft;
+		WallFollower.sonarLeft = sonarLeft;
 				
 		//Prepare behaviors
 		Behavior driveAlongWall = new Drive(robot, this);

@@ -3,6 +3,13 @@ package common;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.TachoMotorPort;
 
+/**
+ * Our sensor arm carries both the light sensor and ultrasonic sensor.
+ * In theory, we can bend it up to 90°.
+ * 
+ * @author Philipp
+ *
+ */
 public class SensorArm extends NXTRegulatedMotor {
 
 	private int leftMaxAngle = -33;
@@ -113,6 +120,4 @@ public class SensorArm extends NXTRegulatedMotor {
 	public void alignRight() {
 		this.rotateTo(this.rightMaxAngle);
 	}
-
-
 }

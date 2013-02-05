@@ -1,4 +1,4 @@
-package common;
+package common.gates;
 
 /**
  * Compilation of Variables

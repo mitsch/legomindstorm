@@ -9,9 +9,7 @@ import common.color.ColorOracle;
 public class ColorSensor extends LightSensor {
 
 	private Color[] possibleColors = { Color.UNDEFINED };
-
 	private Color lastColor = Color.UNDEFINED;
-
 	private ColorOracle.Strength strength = ColorOracle.Strength.HARD;
 
 	public ColorSensor(ADSensorPort port, boolean floodlight) {
@@ -40,7 +38,7 @@ public class ColorSensor extends LightSensor {
 	}
 
 	private int getColorValue() {
-		return super.getLightValue();
+		return super.readValue();
 	}
 	
 	/**

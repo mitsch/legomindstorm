@@ -2,6 +2,14 @@ package common;
 
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * A StrategyBehavior does all these things that we would have to do
+ * manually (suppressed, ...).
+ * Tell it to which strategy it belongs.
+ * 
+ * @author Thomas
+ *
+ */
 public abstract class StrategyBehavior implements Behavior {
 	protected Strategy parent;
 	protected boolean suppressed;

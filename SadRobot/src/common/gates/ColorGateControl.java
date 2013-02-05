@@ -1,4 +1,4 @@
-package common;
+package common.gates;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

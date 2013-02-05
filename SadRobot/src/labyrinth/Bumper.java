@@ -1,6 +1,6 @@
 package labyrinth;
 
-import labyrinth.LabyrinthStrategy.BumpResult;
+import labyrinth.WallFollower.BumpResult;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;

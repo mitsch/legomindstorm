@@ -168,7 +168,7 @@ public class MainControl {
 		robot.sonar.continuous();
 		
 		Delay.msDelay(5000);
-		robot.joker.rotateTo(robot.getLeftJoker(), true);
+		robot.arm.rotateTo(robot.arm.getLeftMaxAngle(), true);
 		Delay.msDelay(5000);
 		
 		robot.pilot.forward();
@@ -293,7 +293,7 @@ public class MainControl {
 		robot.sonar.continuous();
 			
 		//drive up to the gate		
-		robot.alignLightMiddle();
+		robot.arm.alignMiddle();
 		while (robot.sonar.getDistance() > 20) {
 			if (aborted)
 				return;
@@ -374,7 +374,7 @@ public class MainControl {
 			return;
 		
 		//drive forward until we see the pusher (or accidently passed it)
-		robot.alignLightLeft();
+		robot.arm.alignRight();
 		robot.pilot.forward();
 		while (!aborted && !(robot.sonar.getDistance() < 10) 
 				&& !robot.isLineBeneath());

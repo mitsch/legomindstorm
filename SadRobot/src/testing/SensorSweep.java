@@ -11,7 +11,7 @@ public class SensorSweep {
 		Robot robot = new Robot();
 		
 		robot.alignLightLeft();
-		robot.joker.rotateTo(180);
+		robot.arm.rotateTo(180);
 
 	}
 

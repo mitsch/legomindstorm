@@ -22,7 +22,7 @@ public class SensorArm extends NXTRegulatedMotor {
 	
 	public void calibrate() {
 		do {
-			System.out.println("calibrate joker");
+			System.out.println("Calibrate SensorArm");
 			this.setStallThreshold(8, 3);
 
 			// Find left boundary
@@ -33,8 +33,7 @@ public class SensorArm extends NXTRegulatedMotor {
 			this.rotate(16);
 			this.waitComplete();
 			leftMaxAngle = this.getPosition();
-			System.out.println("left max "
-					+ Integer.toString(this.leftMaxAngle));
+			System.out.println("SensorArm.leftMaxAngle: "+ Integer.toString(this.leftMaxAngle));
 
 			// Find right boundary
 			this.forward();
@@ -44,8 +43,10 @@ public class SensorArm extends NXTRegulatedMotor {
 			this.rotate(-16);
 			this.waitComplete();
 			this.rightMaxAngle = this.getPosition();
-			System.out.println("right max "
-					+ Integer.toString(this.rightMaxAngle));
+			
+			System.out.println("SensorArm.rightMaxAngle: "+ Integer.toString(this.rightMaxAngle));
+			
+		
 		} while (java.lang.Math
 				.abs(180 - (this.rightMaxAngle - this.leftMaxAngle)) > 4);
 

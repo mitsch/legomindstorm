@@ -6,7 +6,7 @@ import common.StrategyBehavior;
 
 public class FindColor extends StrategyBehavior {
 	private Robot robot;
-
+	
 	public FindColor(Robot robot, Strategy parent) {
 		super(parent);
 		this.robot = robot;
@@ -20,6 +20,6 @@ public class FindColor extends StrategyBehavior {
 	
 	@Override
 	public void work() {
-		robot.pilot.stop();
+		parent.stop();
 	}
 }

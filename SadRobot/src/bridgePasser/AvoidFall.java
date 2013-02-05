@@ -3,7 +3,14 @@ package bridgePasser;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
+/**
+ * If we don't see ground below, we turn away.
+ * 
+ * @author Thomas
+ *
+ */
 public class AvoidFall extends StrategyBehavior {
 	private Robot robot;
 	private boolean leftBridge;
@@ -16,7 +23,7 @@ public class AvoidFall extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return robot.isFallBeneath();
+		return !robot.isWoodBeneath();
 	}
 
 	@Override

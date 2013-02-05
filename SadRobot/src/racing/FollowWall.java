@@ -32,7 +32,7 @@ public class FollowWall extends StrategyBehavior {
 	@Override
 	public void work() {
 		int deltaDistance = distance - Racer.regularDistance;
-		int factor = robot.getMiddleJoker() > robot.joker.getPosition() ? 3 : -5;
+		int factor = robot.getMiddleJoker() > robot.arm.getPosition() ? 3 : -5;
 
 		System.out.println("correct to " + Integer.toString(factor * deltaDistance));
 		robot.pilot.steer(factor *  deltaDistance);

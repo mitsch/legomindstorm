@@ -3,7 +3,14 @@ package bridgePasser;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
+/**
+ * If we see a bridge below us, we drive in a slight curve.
+ * 
+ * @author Thomas
+ *
+ */
 public class DriveBridge extends StrategyBehavior {
 	private Robot robot;
 	private boolean leftBridge;
@@ -16,7 +23,7 @@ public class DriveBridge extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return !robot.isFallBeneath();
+		return robot.isWoodBeneath();
 	}
 
 	@Override

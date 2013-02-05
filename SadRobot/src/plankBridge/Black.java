@@ -3,6 +3,7 @@ package plankBridge;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
+import common.color.Color;
 
 public class Black extends StrategyBehavior {
 	private Robot robot;

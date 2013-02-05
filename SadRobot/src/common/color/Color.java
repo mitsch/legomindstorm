@@ -1,7 +1,7 @@
 package common.color;
 
 /**
- * Colors in Parcour.
+ * Colors in Parcour. Uses ormalized raw value (0 to 1023)!
  * @author HM42
  *
  */
@@ -14,23 +14,19 @@ public enum Color {
 	/**
 	 * Abgrund.
 	 */
-	ABYSS(27,28,29),
+	ABYSS(28,30,32),
 	/**
 	 * Plane.
 	 */
-	BLACK(20,24,32),
+	BLACK(20,27,29),
 	/**
 	 * Linie.
 	 */
-	SILVER(45,46,47),
+	SILVER(44,48,52),
 	/**
-	 * Bruecke (dunkel).
+	 * Bruecke.
 	 */
-	BROWN_DARK(36,37,38),
-	/**
-	 * Bruecke (hell).
-	 */
-	BROWN_LIGHT(35,36,37), 
+	BROWN(36,37,38),
 	/**
 	 * Sumpf.
 	 */

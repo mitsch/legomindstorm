@@ -4,6 +4,11 @@ import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
 
+/**
+ * Hindernis
+ * @author HM42
+ *
+ */
 public class ObstacleDetector extends StrategyBehavior {
 	private Robot robot;
 	
@@ -11,7 +16,7 @@ public class ObstacleDetector extends StrategyBehavior {
 		super(parent);
 		this.robot = robot;
 	}
-
+	
 	@Override
 	protected boolean wantsToWork() {
 		return robot.sonar.getDistance() < 20;

@@ -14,7 +14,6 @@ public class DisplaySonar {
 		Robot robot = new Robot();
 		
 		while (Button.readButtons() != Button.ID_ESCAPE) {
-			robot.sonar.ping();
 			LCD.drawString("    ", 0, 0);
 			LCD.drawInt(robot.sonar.getDistance(), 0, 0);
 			

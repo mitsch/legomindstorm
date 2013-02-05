@@ -1,20 +1,17 @@
-import plankBridge.PlankBridgePasser;
 import bridgePasser.BridgeStrategy;
-import labyrinth.LabyrinthStrategy;
+import labyrinth.WallFollower;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lejos.util.Delay;
 import lineFollowing.LineFollower;
-import common.GateCommon;
-import common.GateControl;
 import common.Robot;
 import common.Strategy;
-import foamBog.FoamBogStrategy;
+import common.color.Color;
+import common.gates.ColorGateControl;
+import common.gates.GateControl;
 
 public class MainControl {
 	public enum Mode {WAIT_FOR_BARCODE, WAIT_FOR_RACE, RUNNING};
-	public enum Level {RACE, BRIDGE, LABYRINTH, BOG, BLUETOOTH, TURNTABLE,
-		PUSHER, SEESAW, PLANKBRIDGE, OPPOSITE_LANE, COLORS, ENDBOSS
-	}
 	public static Robot robot;
 	public static Mode mode = Mode.WAIT_FOR_BARCODE;
 	public static Strategy currentStrategy = null;
@@ -26,7 +23,8 @@ public class MainControl {
 	 * so we will know when the race begins.
 	 */
 	public static void main(String[] args) {	
-		MainControl.robot = new Robot();
+		Delay.msDelay(2000);
+		robot = new Robot();
 		
 		//Since the rule committee wants it so, we react to our Enter-Button
 		//depending on the current mode
@@ -48,6 +46,7 @@ public class MainControl {
 					}
 					mode = Mode.WAIT_FOR_BARCODE;
 					aborted = true;
+					robot.pilot.stop();
 					break;
 				case WAIT_FOR_BARCODE:
 					//If we were just waiting to reenter the race, we have a
@@ -62,7 +61,7 @@ public class MainControl {
 			}
 		});
 		
-		Button.ESCAPE.waitForPressAndRelease();
+		while (true);
 	}
 	
 	/**
@@ -70,6 +69,7 @@ public class MainControl {
 	 * before.
 	 */
 	public static void startNextLevel() {
+		Delay.msDelay(2000);
 		int lines = analyzeLines();
 		if (lines == 0)
 			return;
@@ -83,28 +83,29 @@ public class MainControl {
 	 */
 	public static int analyzeLines() {
 		//we find the first line
-		robot.pilot.forward();
 		int lineCount = 0;
-		while (robot.isLineBeneath()) {
+		robot.pilot.travel(100, true);
+		while (!robot.isLineBeneath() && robot.pilot.isMoving()) {
 			if (aborted)
-				return 0;
+				return -1;
 		}
 		
 		//now we count them
 		while (robot.isLineBeneath()) {
 			lineCount++;
-			robot.pilot.travel(20, true);
+			robot.pilot.travel(8, true);
 			//we have to leave the current line, cross the void, and enter the
 			//next line
 			while (robot.pilot.isMoving() && robot.isLineBeneath()) {
 				if (aborted)
-					return 0;
+					return -1;
 			}
-			
+			Delay.msDelay(75);
 			while (robot.pilot.isMoving() && !robot.isLineBeneath()) {
 				if (aborted)
-					return 0;
+					return -1;
 			}
+			Delay.msDelay(75);
 		}
 		
 		return lineCount;
@@ -117,34 +118,37 @@ public class MainControl {
 	 */
 	public static void startProgram(int lines) {
 		switch (lines) {
-			case 1:
-				race();
+			case 13:
+				mode = Mode.WAIT_FOR_RACE;
 				break;
-			case 2:
-				bridge();
+			case 5:
+				bridge(false);
 				break;
-			case 3:
+			case 7:
 				labyrinth();
 				break;
 			case 4:
+				foamBog();
+				break;
+			case 3:
 				bluetoothGate();
 				break;
-			case 5:
+			case 11:
 				turnTable();
 				break;
-			case 6:
+			case 12:
 				pusher();
 				break;
-			case 7:
+			case 10:
 				seesaw();
 				break;
-			case 8:
+			case 6:
 				plankBridge();
 				break;
 			case 9:
 				oppositeLane();
 				break;
-			case 10:
+			case 8:
 				colorChooser();
 				break;
 		}
@@ -154,43 +158,56 @@ public class MainControl {
 	 * We need a head start to win... Go, go, GO!
 	 */
 	public static void start() {
-		//We don't need no light sensor.
-		robot.light.setFloodlight(false);
-		robot.sonar.off();
+		
+		Delay.msDelay(5000);
+		robot.arm.rotateTo(robot.arm.getLeftMaxAngle(), true);
+		Delay.msDelay(5000);
 		
 		robot.pilot.forward();
+		int distance = robot.sonar.getDistance();
+		boolean leftWall = true;
 		while (!robot.isLineBeneath()) {
-			if (aborted)
-				return;
+			if (robot.sonar.getDistance() - distance > 20)
+				leftWall = false;
+			
+			if (aborted) return;
 		}	
-		while (robot.isLineBeneath()) {
-			if (aborted)
-				return;
+		Delay.msDelay(50);
+		
+		if (!leftWall) {
+			currentStrategy = new WallFollower(robot, true,
+					WallFollower.BumpResult.EVADE);
+			currentStrategy.start();
+			
+			if (aborted) return;
 		}
 		
-		race();
+		while (robot.isLineBeneath()) {
+			if (aborted) return;
+		}
+		Delay.msDelay(50);
+		
+		race(leftWall);
 	}
 	
 	/**
 	 * The race has begun! We have to take two slalom turns, that's all.
 	 * Oh yeah... There could be other robots in the way...
 	 */
-	public static void race() {	
+	public static void race(boolean leftWall) {	
 		//We start 
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		//We use our labyrinth algorithm to pass this
-		currentStrategy = new LabyrinthStrategy(robot, true,
-				LabyrinthStrategy.BumpResult.EVADE);
+		currentStrategy = new WallFollower(robot, leftWall,
+				WallFollower.BumpResult.EVADE);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
 		//now we are on the first line of the bridge barcode
-		//TODO: while (!wood)
-		bridge();
+		if (analyzeLines() == -1) return; 
+
+		bridge(leftWall);
 	}
 	
 	/**
@@ -198,15 +215,27 @@ public class MainControl {
 	 * very easily. Use the light sensor to determine if we are on the bridge
 	 * or just in the process of falling off.
 	 */
-	public static void bridge() {
-		robot.sonar.off();
-		robot.light.setFloodlight(true);
+	public static void bridge(boolean leftWall) {
 		
-		currentStrategy  = new BridgeStrategy(robot, false);	
+		robot.pilot.travel(10, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
+		
+		//navigate on to the bridge
+		currentStrategy = new WallFollower(robot, leftWall,
+				WallFollower.BumpResult.EVADE,
+				WallFollower.AbortCondition.WOOD);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
+		currentStrategy = new BridgeStrategy(robot, true);	
 		currentStrategy.start();	
 		
-		if (aborted)
-			return;
+		if (aborted) return;
+		
+		if (analyzeLines() == -1) return;
 		
 		labyrinth();
 	}
@@ -216,15 +245,19 @@ public class MainControl {
 	 * the left or right wall and hope we end up somewhere.
 	 */
 	public static void labyrinth() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
-		currentStrategy = new LabyrinthStrategy(robot, true,
-				LabyrinthStrategy.BumpResult.TURN);
+		robot.pilot.travel(10, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
+		
+		currentStrategy = new WallFollower(robot, true,
+				WallFollower.BumpResult.TURN);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
+		
+		if (analyzeLines() == -1) return;
 		
 		foamBog();
 	}
@@ -233,15 +266,26 @@ public class MainControl {
 	 * A bog of foam. How stupid. FYI: Our robot cannot swim.
 	 */
 	public static void foamBog() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
+		
+		robot.pilot.travel(10, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
 		
 		//We could also simply use the labyrinth strategy
-		currentStrategy = new FoamBogStrategy(robot);
+		currentStrategy = new WallFollower(robot, true,
+				WallFollower.BumpResult.NONE,
+				WallFollower.AbortCondition.TIME);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
+		
+		robot.pilot.forward();
+		while (!aborted && robot.isLineBeneath());
+		
+		Delay.msDelay(100);
+		
+		if (analyzeLines() == -1) return;
 		
 		bluetoothGate();
 	}
@@ -250,33 +294,35 @@ public class MainControl {
 	 * Open sesame! This gate should open if we ask it nicely per BlueTooth.
 	 */
 	public static void bluetoothGate() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 			
 		//drive up to the gate		
-		robot.alignLightMiddle();
-		while (robot.sonar.getDistance() > 20) {
-			if (aborted)
-				return;
-		}
+		robot.arm.alignCenter();
+		robot.pilot.forward();
+		while (!aborted && robot.sonar.getDistance() > 20);
+		robot.pilot.stop();
+		
+		if (aborted) return;
 		
 		//connect and open
+		System.out.println("Now opening the gate");
 		GateControl gateControl = new GateControl();
 		while (!aborted && 
-				!gateControl.connectionToGateSuccessful(GateCommon.GATE_1)) {
-			if (aborted)
-				return;
-		}
+				!gateControl.connectionToGateSuccessful());
+		if (aborted) return;
+		
+		gateControl.openGate();
+		while (!aborted && robot.sonar.getDistance() < 20);
+		
+		if (aborted) return;
 		
 		//navigate through it until you find a line
+		robot.pilot.forward();	
+		while (!robot.isLineBeneath());
 		
-		//follow line until the sonar registers an obstacle
-		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.OBSTACLE);
-		currentStrategy.start();
-		
-		if (aborted)
+		if (analyzeLines() == -1)
 			return;
+		
+		gateControl.disconnectFromGate();
 		
 		turnTable();
 	}
@@ -289,8 +335,15 @@ public class MainControl {
 	 * out.
 	 */
 	public static void turnTable() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
+		
+		//follow line until the sonar registers an obstacle
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.OBSTACLE);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
+		//ask the bluetooth to enter the table
 		
 		//navigate into the table
 		
@@ -299,11 +352,10 @@ public class MainControl {
 		
 		//find a line and follow it until we see wood
 		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.WOOD);
+				LineFollower.AbortCondition.END_OF_THE_LINE);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
 		pusher();
 	}
@@ -313,50 +365,70 @@ public class MainControl {
 	 * and wait until it's gone. Then BURNOUT!
 	 */
 	public static void pusher() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(false);
 		
-		//drive along the wall 'til we bump, twice
-		for (int i=0; i<2; i++) {
-			currentStrategy = new LabyrinthStrategy(robot, true,
-					LabyrinthStrategy.BumpResult.HALT);
-			currentStrategy.start();
-			
-			if (aborted)
-				return;
-		}
-		
-		//drive backwards to the button
-		robot.pilot.travel(-20, true);
+		robot.pilot.travel(10, true);
 		while (!aborted && robot.pilot.isMoving());
 		
-		if (aborted)
-			return;
+		if (aborted) return;
+		
+		currentStrategy = new WallFollower(robot, false,
+				WallFollower.BumpResult.HALT);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
+		currentStrategy = new WallFollower(robot, false,
+				WallFollower.BumpResult.HALT_AGGRESSIVE);
+		currentStrategy.start();
+		
+		//drive backwards to the button
+		robot.pilot.travel(-10, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
+		
+		currentStrategy = new WallFollower(robot, false,
+				WallFollower.BumpResult.NONE,
+				WallFollower.AbortCondition.TIME);
+		currentStrategy.start();
+		
+		if (aborted) return;
 		
 		//drive forward until we see the pusher (or accidently passed it)
-		robot.alignLightLeft();
-		robot.pilot.forward();
-		robot.light.setFloodlight(true);
-		while (!aborted && !(robot.sonar.getDistance() < 10) 
-				&& !robot.isLineBeneath());
+		robot.arm.alignCenter();
+		robot.pilot.travel(10, true);
+		while (!aborted && robot.pilot.isMoving());
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
 		//wait until it is free
 		robot.pilot.stop();
-		while (!aborted && robot.sonar.getDistance() < 10);
+		while (!aborted && robot.sonar.getDistance() > 50);
+		Delay.msDelay(100);
+		while (!aborted && robot.sonar.getDistance() < 50);
 		
-		if (aborted)
-			return;
+		if (aborted) return;
+		
+		robot.pilot.forward();
+		
+		currentStrategy = new WallFollower(robot, false,
+			WallFollower.BumpResult.NONE,
+			WallFollower.AbortCondition.TIME);
+		currentStrategy.start();	
+
+		if (aborted) return;
+		
+		robot.pilot.forward();
+		while (!aborted && !robot.isLineBeneath());
+		
+		if (aborted) return;
 		
 		//follow the line until we see an obstacle (sonar) or wood
 		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.OBSTACLE);
+				LineFollower.AbortCondition.END_OF_THE_LINE);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 	
 		seesaw();
 	}
@@ -365,30 +437,37 @@ public class MainControl {
 	 * Ha, child's play!
 	 */
 	public static void seesaw() {
-		robot.sonar.off();
-		robot.light.setFloodlight(true);
 		
 		robot.pilot.forward();
+		while (!aborted && !robot.isWoodBeneath());
+		
+		if (aborted) return;
+		
+		robot.pilot.travel(20);
 		while (!aborted && robot.pilot.isMoving());
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
-		currentStrategy = new BridgeStrategy(robot, true);
+		currentStrategy = new BridgeStrategy(robot, false);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
-		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.END_OF_THE_LINE);
-		currentStrategy.start();
-		
-		if (aborted)
-			return;
-		
-		if (analyzeLines() == 0)
-			return;
+		int n;
+		do {	
+			currentStrategy = new LineFollower(robot,
+					LineFollower.AbortCondition.END_OF_THE_LINE);
+			currentStrategy.start();
+			
+			if (aborted)
+				return;
+			
+			n = analyzeLines();
+			if (n==-1) return;
+			
+			if (n<3)
+				robot.pilot.travel(-50);
+		} while (n < 3);
 		
 		plankBridge();
 	}
@@ -397,24 +476,18 @@ public class MainControl {
 	 * Simply drive over it. Can't be that hard...
 	 */
 	public static void plankBridge() {
-		robot.sonar.off();
-		robot.light.setFloodlight(true);
+		robot.pilot.travel(30, true);
+		while (!aborted && robot.pilot.isMoving());
 		
-		currentStrategy = new PlankBridgePasser(robot);
-		currentStrategy.start();
-		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
 		currentStrategy = new LineFollower(robot,
 				LineFollower.AbortCondition.END_OF_THE_LINE);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
-		if (analyzeLines() == 0)
-			return;
+		if (analyzeLines() == -1) return;
 		
 		oppositeLane();
 	}
@@ -425,18 +498,19 @@ public class MainControl {
 	 * care.
 	 */
 	public static void oppositeLane() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
+		robot.pilot.travel(30, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
+			
 		currentStrategy = new LineFollower(robot,
-				LineFollower.AbortCondition.END_OF_THE_LINE);
+				LineFollower.AbortCondition.END_OF_THE_LINE, true);
 		currentStrategy.start();
 		
-		if (aborted)
-			return;
+		if (aborted) return;
 		
-		if (analyzeLines() == 0)
-			return;
+		if (analyzeLines() == -1) return;
 		
 		colorChooser();
 	}
@@ -447,22 +521,80 @@ public class MainControl {
 	 * button next to it.
 	 */
 	public static void colorChooser() {	
-		robot.sonar.continuous();
-		robot.light.setFloodlight(true);
 		
 		//ask the bluetooth gate for a color
+		ColorGateControl gateControl = new ColorGateControl();
+		while (!aborted && 
+				!gateControl.connectionToColorGateSuccessful()) {
+			if (aborted)
+				return;
+		}
 		
 		//wait for the answer
-			
+		int i = gateControl.readColor();
+		
+		if (aborted) return;
+		
+		Color color;
+		if (i==0) {
+			//we are looking for red
+			color = Color.GREEN;
+		} else if (i==1) {
+			//we are looking for yellow
+			color = Color.YELLOW;
+		} else {
+			//we are looking for green
+			color = Color.RED;
+		}
+		
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.COLOR);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
+		currentStrategy = new WallFollower(robot, true, color);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
+		//now we reached the right color
+		robot.pilot.steer(-100, -90, true);
+		while (!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
+		
+		robot.pilot.forward();
+		while (!aborted && !robot.leftTouch.isPressed() && !robot.rightTouch.isPressed());
+		
+		if (aborted) return;
+		
+		//Hopefully, we have pushed the button
+		robot.pilot.steer(-100, 90, true);
+		while(!aborted && robot.pilot.isMoving());
+		
+		if (aborted) return;
+		
+		currentStrategy = new WallFollower(robot, true, WallFollower.BumpResult.EVADE,
+				WallFollower.AbortCondition.LINE);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
+		analyzeLines();	
 	}
 	
 	/**
 	 * Since we know nothing about this, there is only one goal: SURVIVAL!
+	 * EDIT: The endboss will be some robot with a claw, trying to overthrow
+	 * this robots. Hopefully, we are heavy enough.
 	 */
 	public static void endBoss() {
-		robot.sonar.continuous();
-		robot.light.setFloodlight(false);
 		
-		//do some bullshit here
+		currentStrategy = new WallFollower(robot, true,
+				WallFollower.BumpResult.TURN);
+		currentStrategy.start();
+		
+		if (aborted) return;
 	}
 }

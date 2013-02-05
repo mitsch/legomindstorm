@@ -23,7 +23,7 @@ public class DriveBridge extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return robot.color.getColor(Color.ABYSS, Color.BROWN) == Color.BROWN;
+		return robot.isWoodBeneath();
 	}
 
 	@Override

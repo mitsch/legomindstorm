@@ -15,7 +15,7 @@ public class WoodDetector extends StrategyBehavior {
 
 	@Override
 	protected boolean wantsToWork() {
-		return (Color.BROWN == this.robot.color.getColor(Color.BLACK, Color.SILVER, Color.BROWN));
+		return robot.isWoodBeneath();
 	}
 
 	@Override

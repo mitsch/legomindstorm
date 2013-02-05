@@ -119,7 +119,7 @@ public class ColorOracle {
 				}
 
 				if (SimpleCollections.frequency(direction, distance) == 1) {
-					return options[direction.indexOf(direction)];
+					return options[direction.indexOf(distance)];
 				}
 
 			}

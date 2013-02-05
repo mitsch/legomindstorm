@@ -10,7 +10,7 @@ public class ColorSensor extends LightSensor {
 
 	private Color[] possibleColors = { Color.UNDEFINED };
 	private Color lastColor = Color.UNDEFINED;
-	private ColorOracle.Strength strength = ColorOracle.Strength.HARD;
+	private ColorOracle.Strength strength = ColorOracle.Strength.WEAK;
 
 	public ColorSensor(ADSensorPort port, boolean floodlight) {
 		super(port, floodlight);

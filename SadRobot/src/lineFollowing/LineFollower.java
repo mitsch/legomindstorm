@@ -15,37 +15,55 @@ import common.Strategy;
  */
 public class LineFollower extends Strategy {
 	public enum AbortCondition {OBSTACLE, WOOD, END_OF_THE_LINE};
+	public enum Mode {FOLLOW_LINE, AVOID_OBSTACLE};
 	public static int lineCurvature = 0;
-	
+	public static long started;
+	public static Mode mode = Mode.FOLLOW_LINE;
 	
 	public LineFollower(Robot robot, AbortCondition abort) {
+		this(robot, abort, false);
+	}
+		
+	public LineFollower(Robot robot, AbortCondition abort, boolean detectObstacles) {
 		
 		Behavior followLine = new FollowLine(robot, this);
 		Behavior findLine = new FindLine(robot,
 				abort == AbortCondition.END_OF_THE_LINE, this);
-		Behavior detectObstacle = new ObstacleDetector(robot, this);
-		Behavior detectWood = new WoodDetector(robot, this);
 		
-		Behavior[] behaviors;
-		if (abort == AbortCondition.END_OF_THE_LINE)
-			behaviors = new Behavior[2];
-		else
-			behaviors = new Behavior[3];
+		int size = 2;
+		if (abort != AbortCondition.END_OF_THE_LINE)
+			size++;
+		
+		if (detectObstacles)
+			size+=2;
+		
+		Behavior[] behaviors = new Behavior[size];
 		behaviors[0] = findLine;
 		behaviors[1] = followLine;
+		
+		int filled = 2;
 		
 		//add the abort condition
 		switch (abort) {
 		case OBSTACLE:
-			behaviors[2] = detectObstacle;
+			behaviors[2]= new ObstacleDetector(robot, this);
+			filled++;
 			break;
 		case WOOD:
-			behaviors[2] = detectWood;
+			behaviors[2] = new WoodDetector(robot, this);
+			filled++;
 			break;
 		case END_OF_THE_LINE:
 			break;
 		}
 		
+		if (detectObstacles) {
+			behaviors[filled] = new ObstacleAvoider(robot, this);
+			behaviors[filled+1] = new LineFinder(robot, this);
+		}
+		
 		arbitrator = new Arbitrator(behaviors, true);
+		
+		robot.arm.alignMiddle();
 	}
 }

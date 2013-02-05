@@ -32,6 +32,7 @@ public class FindLine extends StrategyBehavior {
 	 */
 	@Override
 	public void work() {
+		robot.pilot.travel(10);
 		//find line by rotating a bit to the right and left	
 		robot.pilot.setRotateSpeed(60);
 		int currentHeading = 0;
@@ -45,7 +46,7 @@ public class FindLine extends StrategyBehavior {
 		while (!suppressed && !robot.isLineBeneath()) {
 			//if we would rotate too far
 			//TODO: react to end of line
-			if (turn >= 110) {
+			if (turn >= 130) {
 				robot.pilot.rotate(-currentHeading);
 				if (!suppressed) {
 					robot.pilot.travel(15);
@@ -53,13 +54,7 @@ public class FindLine extends StrategyBehavior {
 					robot.pilot.stop();
 					
 					if (detectEndOfLine) {
-						robot.pilot.rotate(-100, true);
-						while (!suppressed && robot.pilot.isMoving() && !robot.isLineBeneath());
-						robot.pilot.rotate(200, true);
-						while (!suppressed && robot.pilot.isMoving() && !robot.isLineBeneath());
-						robot.pilot.stop();
-						if (!robot.isLineBeneath())
-							parent.stop();
+						parent.stop();
 					}
 				}
 				break;
@@ -78,7 +73,14 @@ public class FindLine extends StrategyBehavior {
 		}
 		
 		lastHeadingLeft = sign == 1;
-		LineFollower.lineCurvature += sign*20;
+		LineFollower.lineCurvature = sign*20;
+		if (Math.abs(LineFollower.lineCurvature) > 100) {
+			if (Math.signum(LineFollower.lineCurvature) < 0)
+				LineFollower.lineCurvature = -100;
+			else
+				LineFollower.lineCurvature = 100;
+			
+		}
 		robot.pilot.setRotateSpeed(90);
 	}
 }

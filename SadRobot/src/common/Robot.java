@@ -3,7 +3,9 @@ package common;
 import common.color.Color;
 import common.color.ColorOracle.Strength;
 
+import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
+import lejos.nxt.MotorPort;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
 import lejos.nxt.TouchSensor;
@@ -20,8 +22,9 @@ import lejos.robotics.navigation.DifferentialPilot;
 public class Robot {
 	public TouchSensor leftTouch, rightTouch;
 	public UltrasonicSensor sonar;
+	public LightSensor light;
 	
-	public ColorSensor color;
+	//public ColorSensor color;
 	
 	public NXTRegulatedMotor leftMotor, rightMotor;
 	public SensorArm arm;
@@ -31,23 +34,26 @@ public class Robot {
 	public Robot() {
 		leftMotor = Motor.C;
 		rightMotor = Motor.A;
-		arm = (SensorArm) Motor.B;
+		arm = new SensorArm(MotorPort.B);
 		
 		leftTouch = new TouchSensor(SensorPort.S4);
 		rightTouch = new TouchSensor(SensorPort.S1);
 		sonar = new UltrasonicSensor(SensorPort.S3);
+		light = new LightSensor(SensorPort.S2);
 		
-		// This is our new ColorSensor! Its used insted of the LightSensor.
-		color = new ColorSensor(SensorPort.S2);
-		color.setStrength(Strength.WEAK);
+		// This is our new ColorSensor! It is used instead of the LightSensor.
+		//color = new ColorSensor(SensorPort.S2);
 		
-		////  pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor, rightMotor);
-		pilot = new DifferentialPilot(3.65f , 26.f, leftMotor, rightMotor);
+		pilot = new DifferentialPilot(3.3f , 21.0f, leftMotor, rightMotor);
 		
 		arm.calibrate(-90, 90);
 	}	
 	
 	public boolean isLineBeneath() {
-		return color.getColor(Color.BLACK, Color.SILVER) == Color.SILVER;
+		return light.readValue() > 38;
+	}
+	
+	public boolean isWoodBeneath() {
+		return light.readValue()  > 34;
 	}
 }

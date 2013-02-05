@@ -1,5 +1,6 @@
 package labyrinth;
 
+import testing.SonarTester;
 import labyrinth.WallFollower.BumpResult;
 import common.Robot;
 import common.Strategy;
@@ -29,9 +30,15 @@ public class Bumper extends StrategyBehavior {
 	@Override
 	public void work() {
 		switch (bumpResult) {
+		case NONE:
+			break;
 		case HALT:
 			robot.pilot.travel(-10);
-			robot.pilot.rotate(-90);
+			robot.pilot.rotate(90);
+			parent.stop();
+			break;
+		case HALT_AGGRESSIVE:
+			robot.pilot.rotate(90);
 			parent.stop();
 			break;
 		case TURN:
@@ -39,8 +46,15 @@ public class Bumper extends StrategyBehavior {
 			robot.pilot.rotate(-90);
 			break;
 		case EVADE:
-			short sign;
-			if (robot.leftTouch.isPressed())
+			//short sign;
+			if (robot.leftTouch.isPressed() && robot.rightTouch.isPressed()) {
+				robot.pilot.travel(-10);
+				if (WallFollower.sonarLeft)
+					robot.pilot.rotate(-90);
+				else
+					robot.pilot.rotate(90);
+				return;
+			}/* else if (robot.leftTouch.isPressed())
 				sign = -1;
 			else if (robot.leftTouch.isPressed())
 				sign = 1;
@@ -49,10 +63,12 @@ public class Bumper extends StrategyBehavior {
 			
 			robot.pilot.travel(-10, true);
 			while (!suppressed && robot.pilot.isMoving());				
-			robot.pilot.arc(sign*20, 45, true);	
+			robot.pilot.rotate(sign*30, true);
 			while (!suppressed && robot.pilot.isMoving());
-			robot.pilot.arc(-20*sign, 45, true);
+			robot.pilot.travel(20, true);
 			while (!suppressed && robot.pilot.isMoving());
+			robot.pilot.travel(-30*sign, true);
+			while (!suppressed && robot.pilot.isMoving());*/
 		}
 	}
 }

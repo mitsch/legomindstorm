@@ -15,9 +15,10 @@ import common.color.Color;
  *
  */
 public class WallFollower extends Strategy {	
-	public enum BumpResult {TURN, EVADE, HALT};
-	public enum AbortCondition {COLOR, LINE, WOOD};
+	public enum BumpResult {TURN, EVADE, HALT, HALT_AGGRESSIVE, NONE};
+	public enum AbortCondition {DARK, COLOR, LINE, WOOD};
 	public static boolean sonarLeft = true;	
+	public static boolean enteredBog = false;
 	public static Color color;
 	
 	public WallFollower(Robot robot, boolean sonarLeft, Color color) {
@@ -39,7 +40,17 @@ public class WallFollower extends Strategy {
 		Behavior bumper = new Bumper(robot, bump, this);
 		Behavior lineRec = new RecognizeLine(robot, abort, this);
 		
-		Behavior[] behaviors = {driveAlongWall, bumper, lineRec};
+		Behavior[] behaviors;
+		if (bump == BumpResult.HALT || bump == BumpResult.HALT_AGGRESSIVE) {
+			behaviors = new Behavior[2];
+			behaviors[0] = driveAlongWall;
+			behaviors[1] = bumper;
+		} else {
+			behaviors = new Behavior[3];
+			behaviors[0] = driveAlongWall;
+			behaviors[1] = bumper;
+			behaviors[2] = lineRec;
+		}
 		
 		//Load the behaviors into an arbitrator
 		arbitrator = new Arbitrator(behaviors, true);

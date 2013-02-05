@@ -8,10 +8,6 @@ import common.color.Color;
 public class White extends StrategyBehavior {
 	private Robot robot;
 	
-	private boolean isLineBeneath(){
-		return (Color.SILVER == this.robot.color.getColor(Color.BLACK, Color.SILVER));
-	}
-	
 	public White(Robot robot, Strategy parent) {
 		super(parent);
 		this.robot = robot; 
@@ -19,13 +15,13 @@ public class White extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return this.isLineBeneath();
+		return robot.isLineBeneath();
 	}
 
 	@Override
 	public void work() {
 		robot.pilot.rotateLeft();
-		while (!suppressed && this.isLineBeneath());
+		while (!suppressed && robot.isLineBeneath());
 		robot.pilot.stop();
 	}
 }

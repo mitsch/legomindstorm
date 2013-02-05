@@ -23,7 +23,7 @@ public class AvoidFall extends StrategyBehavior {
 
 	@Override
 	public boolean wantsToWork() {
-		return robot.color.getColor(Color.ABYSS, Color.BROWN) == Color.ABYSS;
+		return !robot.isWoodBeneath();
 	}
 
 	@Override

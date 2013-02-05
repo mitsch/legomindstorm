@@ -20,11 +20,11 @@ public class RecognizeLine extends StrategyBehavior {
 	public boolean wantsToWork() {
 		switch (abort) {
 		case LINE:
-			return this.robot.color.getColor(Color.BLACK, Color.SILVER) == Color.SILVER;
+			return robot.isLineBeneath();
 		case WOOD:
-			return this.robot.color.getColor(Color.BLACK, Color.BROWN, Color.SILVER) == Color.BROWN;
+			return robot.isWoodBeneath();
 		case COLOR:
-			return this.robot.color.getColor(Color.RED, Color.YELLOW, Color.GREEN) == WallFollower.color;
+			return robot.isLineBeneath();
 		}
 		return false;
 	}

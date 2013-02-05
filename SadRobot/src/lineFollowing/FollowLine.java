@@ -8,10 +8,6 @@ import common.color.Color;
 public class FollowLine extends StrategyBehavior {
 	private Robot robot;
 	
-	private boolean isLineBeneath(){
-		return (Color.SILVER == this.robot.color.getColor(Color.BLACK, Color.SILVER));
-	}
-	
 	public FollowLine(Robot robot, Strategy parent) {
 		super(parent);
 		this.robot = robot; 
@@ -22,7 +18,7 @@ public class FollowLine extends StrategyBehavior {
 	 */
 	@Override
 	public boolean wantsToWork() {
-		return this.isLineBeneath();
+		return robot.isLineBeneath();
 	}
 	
 	/**
@@ -31,7 +27,6 @@ public class FollowLine extends StrategyBehavior {
 	@Override
 	public void work() {
 		robot.pilot.steer(LineFollower.lineCurvature);
-		while (!suppressed && this.isLineBeneath());
-		robot.pilot.stop();
+		while (!suppressed && robot.isLineBeneath());
 	}
 }

@@ -14,15 +14,15 @@ public enum Color {
 	/**
 	 * Abgrund.
 	 */
-	ABYSS(27,28,29),
+	ABYSS(28,30,32),
 	/**
 	 * Plane.
 	 */
-	BLACK(20,24,32),
+	BLACK(20,27,29),
 	/**
 	 * Linie.
 	 */
-	SILVER(45,46,47),
+	SILVER(44,48,52),
 	/**
 	 * Bruecke.
 	 */

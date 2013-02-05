@@ -14,13 +14,21 @@ import lejos.robotics.subsumption.Behavior;
  *
  */
 public class PlankBridgePasser extends Strategy {
+	public static long started;
 	
 	public PlankBridgePasser(Robot robot) {
 		Behavior followLine = new White(robot, this);
 		Behavior findLine = new Black(robot, this);
+		Behavior stop = new PlankStopper(this);
 		
-		Behavior[] behaviors = {findLine, followLine};
+		Behavior[] behaviors = {findLine, followLine, stop};
 		
 		arbitrator = new Arbitrator(behaviors, true);
+	}
+	
+	@Override
+	public void start() {
+		PlankBridgePasser.started = System.currentTimeMillis();
+		arbitrator.start();
 	}
 }

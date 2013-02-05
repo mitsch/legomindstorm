@@ -7,8 +7,10 @@ import lejos.util.Delay;
 import lineFollowing.LineFollower;
 import common.GateCommon;
 import common.GateControl;
+import common.ColorGateControl;
 import common.Robot;
 import common.Strategy;
+import common.color.Color;
 import foamBog.FoamBogStrategy;
 
 public class MainControl {
@@ -483,8 +485,34 @@ public class MainControl {
 		robot.sonar.continuous();
 		
 		//ask the bluetooth gate for a color
+		ColorGateControl gateControl = new ColorGateControl();
+		while (!aborted && 
+				!gateControl.connectionToGate2Successful()) {
+			if (aborted)
+				return;
+		}
 		
 		//wait for the answer
+		int i = gateControl.readColor();
+		
+		if (aborted)
+			return;
+		
+		Color color;
+		if (i==0) {
+			//we are looking for red
+			color = Color.RED;
+		} else if (i==1) {
+			//we are looking for yellow
+			color = Color.YELLOW;
+		} else {
+			//we are looking for green
+			color = Color.GREEN;
+		}
+		
+		currentStrategy = new LabyrinthStrategy(robot, true, LabyrinthStrategy.BumpResult.EVADE);
+		currentStrategy.start();
+		
 			
 	}
 	

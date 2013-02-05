@@ -11,11 +11,6 @@ public class FindLine extends StrategyBehavior {
 	private boolean lastHeadingLeft;
 	private boolean detectEndOfLine;
 	
-	
-	private boolean isLineBeneath(){
-		return (Color.SILVER == this.robot.color.getColor(Color.BLACK, Color.SILVER));
-	}
-	
 	public FindLine(Robot robot, boolean detectEndOfLine, Strategy parent) {
 		super(parent);
 		
@@ -29,8 +24,7 @@ public class FindLine extends StrategyBehavior {
 	 */
 	@Override
 	public boolean wantsToWork() {
-		
-		return !this.isLineBeneath();
+		return !robot.isLineBeneath();
 	}
 	
 	/**
@@ -47,27 +41,36 @@ public class FindLine extends StrategyBehavior {
 			sign = 1;
 		else
 			sign = -1;
-		// 		while (!suppressed && !robot.isLineBeneath()) {
 
-		while (!suppressed && !this.isLineBeneath()) {
+		while (!suppressed && !robot.isLineBeneath()) {
 			//if we would rotate too far
 			//TODO: react to end of line
-			if (turn >= 180) {
-				robot.pilot.rotate(-currentHeading + sign*20);
+			if (turn >= 110) {
+				robot.pilot.rotate(-currentHeading);
 				if (!suppressed) {
-					robot.pilot.travel(30);
+					robot.pilot.travel(15);
 					while (!suppressed && robot.pilot.isMoving());
 					robot.pilot.stop();
+					
+					if (detectEndOfLine) {
+						robot.pilot.rotate(-100, true);
+						while (!suppressed && robot.pilot.isMoving() && !robot.isLineBeneath());
+						robot.pilot.rotate(200, true);
+						while (!suppressed && robot.pilot.isMoving() && !robot.isLineBeneath());
+						robot.pilot.stop();
+						if (!robot.isLineBeneath())
+							parent.stop();
+					}
 				}
 				break;
 			} else {
-				for (int i=0; i<2 && !suppressed && !this.isLineBeneath(); i++) {	
+				for (int i=0; i<2 && !suppressed && !robot.isLineBeneath(); i++) {	
 					robot.pilot.rotate(-currentHeading + sign*turn, true);
-					while (!suppressed && !this.isLineBeneath() && robot.pilot.isMoving());	
+					while (!suppressed && !robot.isLineBeneath() && robot.pilot.isMoving());	
 					robot.pilot.stop();
 					currentHeading = sign*turn;
 				
-					if (!this.isLineBeneath())
+					if (!robot.isLineBeneath())
 						sign *= -1;
 						turn += 20;
 				}

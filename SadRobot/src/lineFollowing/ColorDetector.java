@@ -24,7 +24,7 @@ public class ColorDetector extends StrategyBehavior {
 		robot.arm.alignLeft();
 		if (robot.sonar.getDistance() < 20)
 			parent.stop();
-		robot.arm.alignMiddle();
+		robot.arm.alignCenter();
 	}
 
 }

@@ -68,6 +68,6 @@ public class LineFollower extends Strategy {
 		
 		arbitrator = new Arbitrator(behaviors, true);
 		
-		robot.arm.alignMiddle();
+		robot.arm.alignCenter();
 	}
 }

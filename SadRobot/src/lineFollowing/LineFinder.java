@@ -21,7 +21,7 @@ public class LineFinder extends StrategyBehavior {
 	@Override
 	protected void work() {
 		LineFollower.mode = LineFollower.Mode.FOLLOW_LINE;
-		robot.arm.alignMiddle();
+		robot.arm.alignCenter();
 		robot.pilot.rotate(90);
 	}
 }

@@ -50,8 +50,8 @@ public class EnterBox extends StrategyBehavior {
 			if (state == 0 && distance > 100) state = 1;
 			else if (state == 1 && distance < 20) {
 				robot.pilot.stop();
-				robot.arm.alignRight();
-				if (robot.sonar.getDistance() < 20)
+				robot.arm.alignCenter();
+				if (robot.sonar.getDistance() > 30)
 					state = 2;
 				else {
 					robot.arm.alignLeft();
@@ -60,16 +60,17 @@ public class EnterBox extends StrategyBehavior {
 			}
 		}
 		robot.pilot.stop();
-		robot.arm.alignLeft();
+		robot.arm.rotateTo(robot.arm.getRightMaxAngle() - 45);
 
 		TableTurner.client.turnClockwise(-180);
-		lejos.util.Delay.msDelay(2000);	
-
 		state = 0;
-		while (state != 2 && !suppressed) {
+		while (state != 4 && !suppressed) {
 			int distance = robot.sonar.getDistance();
-			if (state == 0 && distance > 100) state = 1;
-			else if (state == 1 && distance < 40) state = 2;
+			if (state == 0 && distance < 20) state = 1;
+			else if (state == 1 && distance > 100) state = 2;
+			else if (state == 2 && distance < 20) state = 3;
+			else if (state == 3 && distance > 100) state = 4;
+			else if (state == 0 && distance > 100) state = 2;
 		}
 			
 		robot.pilot.forward();

@@ -32,9 +32,9 @@ public class EnterBox extends StrategyBehavior {
 		int rightPreDistance = robot.sonar.getDistance();
 		
 		if (leftPreDistance < rightPreDistance) {
-			robot.pilot.steer(-200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * leftPreDistance)));
+			robot.pilot.steer(-200.0, java.lang.Math.cos((double)(leftPreDistance + rightPreDistance - 2 * leftPreDistance)/48.0));
 		} else if (rightPreDistance < leftPreDistance) {
-			robot.pilot.steer(200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * rightPreDistance)));
+			robot.pilot.steer(200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * rightPreDistance)/48));
 		}
 
 		robot.pilot.forward();

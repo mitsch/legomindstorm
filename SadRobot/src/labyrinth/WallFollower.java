@@ -18,13 +18,18 @@ public class WallFollower extends Strategy {
 	public enum BumpResult {TURN, EVADE, HALT, HALT_AGGRESSIVE, NONE};
 	public enum AbortCondition {COLOR, LINE, WOOD, TIME};
 	public static boolean sonarLeft = true;	
-	public static boolean enteredBog = false;
 	public static Color color;
+	public static int time;
 	public static long started;
 	
 	public WallFollower(Robot robot, boolean sonarLeft, Color color) {
-		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.COLOR);
+		this(robot, sonarLeft, BumpResult.NONE, AbortCondition.COLOR);
 		WallFollower.color = color;
+	}
+	
+	public WallFollower(Robot robot, boolean sonarLeft, int time) {
+		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.TIME);
+		WallFollower.time = time;
 	}
 	
 	public WallFollower(Robot robot, boolean sonarLeft,

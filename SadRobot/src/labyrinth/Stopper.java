@@ -26,7 +26,7 @@ public class Stopper extends StrategyBehavior {
 		case COLOR:
 			return isColorBeneath();
 		case TIME:
-			return System.currentTimeMillis() - WallFollower.started > 5000;
+			return System.currentTimeMillis() - WallFollower.started > WallFollower.time;
 		}
 		return false;
 	}

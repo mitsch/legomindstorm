@@ -1,6 +1,7 @@
 import plankBridge.PlankBridgePasser;
 import bridgePasser.BridgeStrategy;
 import labyrinth.LabyrinthStrategy;
+import labyrinth.LabyrinthStrategy.AbortCondition;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
 import lejos.util.Delay;
@@ -536,8 +537,14 @@ public class MainControl {
 		if (aborted)
 			return;
 		
-		currentStrategy = new LabyrinthStrategy();
+		currentStrategy = new LabyrinthStrategy(robot, true, LabyrinthStrategy.BumpResult.EVADE,
+				LabyrinthStrategy.AbortCondition.LINE);
+		currentStrategy.start();
 		
+		if (aborted)
+			return;
+		
+		analyzeLines();	
 	}
 	
 	/**

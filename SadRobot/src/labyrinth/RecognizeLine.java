@@ -23,6 +23,8 @@ public class RecognizeLine extends StrategyBehavior {
 			return this.robot.color.getColor(Color.BLACK, Color.SILVER) == Color.SILVER;
 		case WOOD:
 			return this.robot.color.getColor(Color.BLACK, Color.BROWN, Color.SILVER) == Color.BROWN;
+		case COLOR:
+			return this.robot.color.getColor(Color.RED, Color.YELLOW, Color.GREEN) == LabyrinthStrategy.color;
 		}
 		return false;
 	}

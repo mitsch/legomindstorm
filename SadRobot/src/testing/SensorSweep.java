@@ -10,8 +10,8 @@ public class SensorSweep {
 	public static void main(String[] args) {
 		Robot robot = new Robot();
 		
-		robot.arm.alignLeft();
-		robot.arm.rotateTo(180);
+		robot.alignLightLeft();
+		robot.joker.rotateTo(180);
 
 	}
 

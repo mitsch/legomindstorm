@@ -5,11 +5,18 @@ import lejos.robotics.subsumption.Behavior;
 
 import common.Robot;
 import common.Strategy;
+import common.color.Color;
 
 public class LabyrinthStrategy extends Strategy {	
 	public enum BumpResult {TURN, EVADE, HALT};
-	public enum AbortCondition {LINE, WOOD};
+	public enum AbortCondition {COLOR, LINE, WOOD};
 	public static boolean sonarLeft = true;	
+	public static Color color;
+	
+	public LabyrinthStrategy(Robot robot, boolean sonarLeft, Color color) {
+		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.COLOR);
+		LabyrinthStrategy.color = color;
+	}
 	
 	public LabyrinthStrategy(Robot robot, boolean sonarLeft,
 			BumpResult bump) {
@@ -31,8 +38,8 @@ public class LabyrinthStrategy extends Strategy {
 		arbitrator = new Arbitrator(behaviors, true);
 		
 		if (sonarLeft)
-			robot.arm.alignLeft();
+			robot.alignLightLeft();
 		else
-			robot.arm.alignRight();
+			robot.alignLightRight();
 	}
 }

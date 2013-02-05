@@ -11,9 +11,9 @@ public class MotorTester4 {
 	 */
 	public static void main(String[] args) {
 		Robot robot = new Robot();
-		robot.arm.flt();
+		robot.joker.flt();
 		
 		while (Button.readButtons() != Button.ID_ESCAPE)
-			LCD.drawInt(robot.arm.getTachoCount(), 0, 0);
+			LCD.drawInt(robot.joker.getTachoCount(), 0, 0);
 	}
 }

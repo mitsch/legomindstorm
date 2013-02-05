@@ -36,51 +36,36 @@ public class ColorGatherer {
 		this.pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor, rightMotor);
 
 	}
-	
-	private int[] gather(int cnt){
-		
 
-		int[] values = new int[cnt];
+	private void run() {
+				
+		System.out.println("GO!");
+	
 		
-		int rnd = 0;
+		int[] values = new int[100];
+		
+		int cnt = 0;
 		
 		pilot.forward();
 		
-		
-		while (rnd<cnt) {
+		while (cnt<500) {
 			
 			values[this.light.getLightValue()]++;
 			
 			Delay.msDelay(10);
-			rnd++;
+			cnt++;
 		}
 		
 		pilot.stop();
-	
-		return values;
 		
-	}
-	
-	private void run() {
+		String csv = "";
 		
-
-		System.out.println("GO!");
-	
-		while(Button.readButtons()!=Button.ID_ESCAPE){
-			
-			System.out.println("Gather?");
-		
-			String csv = "";
-			
-			int[] values = this.gather(500);
-			
-			for (int i = 0; i < values.length; i++) {
-				csv+= values[i] +"; ";
-			}
-			
-			System.out.println(csv);
-			
+		for (int i = 0; i < values.length; i++) {
+			csv+= values[i] +" ";
 		}
 		
+		System.out.println(csv);
+		
+		return;
 	}
 }

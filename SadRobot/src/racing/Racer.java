@@ -40,7 +40,7 @@ public class Racer extends Strategy
 		System.out.println(Integer.toString(regularDistance));
 		robot.joker.rotateTo(positionOfShortestDistance);
 */
-		robot.arm.rotateTo(robot.getRightJoker() - angleOffsetJoker);
+		robot.joker.rotateTo(robot.getRightJoker() - angleOffsetJoker);
 		
 		robot.pilot.setTravelSpeed(robot.pilot.getMaxTravelSpeed());
 		robot.pilot.forward();

@@ -17,7 +17,7 @@ public class LineFollowMain {
 	}
 	
 	public static void followLine(Robot robot) {
-		robot.arm.alignMiddle();
+		robot.alignLightMiddle();
 		LineFollower lineFollower = new LineFollower(robot,
 				LineFollower.AbortCondition.END_OF_THE_LINE);
 		lineFollower.start();	

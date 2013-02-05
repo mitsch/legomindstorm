@@ -15,9 +15,9 @@ public class BridgePasserMain {
 
 	public static void passBridge(Robot robot, boolean leftBridge) {
 		if (leftBridge)
-			robot.arm.alignRight();
+			robot.alignLightRight();
 		else
-			robot.arm.alignLeft();
+			robot.alignLightLeft();
 		BridgeStrategy passer = new BridgeStrategy(robot, leftBridge);
 		passer.start();
 	}

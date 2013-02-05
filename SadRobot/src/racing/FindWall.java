@@ -22,11 +22,11 @@ public class FindWall extends StrategyBehavior {
 	public void work() {
 		robot.pilot.setTravelSpeed(0.5 * robot.pilot.getTravelSpeed());
 
-		int jokerPosition = robot.arm.getPosition();
+		int jokerPosition = robot.joker.getPosition();
 		if (jokerPosition > robot.getMiddleJoker()) {
-			robot.arm.rotateTo(robot.getLeftJoker() + Racer.angleOffsetJoker);
+			robot.joker.rotateTo(robot.getLeftJoker() + Racer.angleOffsetJoker);
 		} else {
-			robot.arm.rotateTo(robot.getRightJoker() - Racer.angleOffsetJoker);
+			robot.joker.rotateTo(robot.getRightJoker() - Racer.angleOffsetJoker);
 		}
 
 		int distance = robot.sonar.getDistance();

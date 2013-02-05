@@ -14,7 +14,7 @@ public class SensorArm extends NXTRegulatedMotor {
 
 	private int leftMaxAngle = -33;
 	private int rightMaxAngle = +33;
-	private int middleAngle = 0;
+	private int centerAngle = 0;
 
 	public SensorArm(TachoMotorPort port) {
 		super(port);
@@ -59,9 +59,9 @@ public class SensorArm extends NXTRegulatedMotor {
 
 		this.setStallThreshold(50, 20);
 
-		this.middleAngle = ((this.leftMaxAngle + this.rightMaxAngle) / 2);
+		this.centerAngle = ((this.leftMaxAngle + this.rightMaxAngle) / 2);
 
-		this.rotateTo(middleAngle);
+		this.rotateTo(centerAngle);
 	}
 
 	/**
@@ -97,24 +97,24 @@ public class SensorArm extends NXTRegulatedMotor {
 	/**
 	 * @return the middleAngle
 	 */
-	public int getMiddleAngle() {
-		return middleAngle;
+	public int getCenterAngle() {
+		return centerAngle;
 	}
 
 	/**
 	 * @param middleAngle
 	 *            the middleAngle to set
 	 */
-	public void setMiddleAngle(int middleAngle) {
-		this.middleAngle = middleAngle;
+	public void setCenterAngle(int centerAngle) {
+		this.centerAngle = centerAngle;
 	}
 
 	public void alignLeft() {
 		this.rotateTo(this.leftMaxAngle);
 	}
 
-	public void alignMiddle() {
-		this.rotateTo(this.middleAngle);
+	public void alignCenter() {
+		this.rotateTo(this.centerAngle);
 	}
 
 	public void alignRight() {

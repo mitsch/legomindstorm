@@ -2,7 +2,6 @@ import turningTable.TableTurner;
 import bridgePasser.BridgeStrategy;
 import labyrinth.WallFollower;
 import lejos.nxt.Button;
-import lejos.nxt.ButtonListener;
 import lejos.nxt.Sound;
 import lejos.util.Delay;
 import lineFollowing.LineFollower;
@@ -13,9 +12,7 @@ import common.gates.ColorGateControl;
 import common.gates.GateControl;
 
 public class MainControl {
-	public enum Mode {WAIT_FOR_BARCODE, WAIT_FOR_RACE, RUNNING};
 	public static Robot robot;
-	public static Mode mode = Mode.WAIT_FOR_BARCODE;
 	
 	/**
 	 * This is the main entry point for our program. We initialize the
@@ -25,37 +22,7 @@ public class MainControl {
 	public static void main(String[] args) {	
 		Delay.msDelay(2000);
 		robot = new Robot();
-		
-		//Since the rule committee wants it so, we react to our Enter-Button
-		//depending on the current mode
-		Button.ENTER.addButtonListener(new ButtonListener() {
-			public void buttonPressed(Button b) {
-				switch (mode) {
-				case WAIT_FOR_RACE:
-					//Since we were just waiting for the race to begin...
-					//LET THE RACE BEGIN!
-					mode = Mode.RUNNING;
-					start();
-					break;
-				case RUNNING:
-					//If we were trying to complete a level, we stop what we are
-					//doing
-					mode = Mode.WAIT_FOR_BARCODE;
-					robot.pilot.stop();
-					break;
-				case WAIT_FOR_BARCODE:
-					//If we were just waiting to reenter the race, we have a
-					//look at the bar code to see what out current level is
-					mode = Mode.RUNNING;
-					startNextLevel();
-				}
-			}
-			
-			public void buttonReleased(Button b) {
-			}
-		});
-		
-		while (true);
+		startNextLevel();	
 	}
 	
 	/**
@@ -104,7 +71,8 @@ public class MainControl {
 	public static void startProgram(int lines) {
 		switch (lines) {
 			case 13:
-				mode = Mode.WAIT_FOR_RACE;
+				Button.ENTER.waitForPressAndRelease();
+				start();
 				break;
 			case 5:
 				bridge(false);
@@ -136,14 +104,16 @@ public class MainControl {
 			case 8:
 				colorChooser();
 				break;
+			case 14:
+				endBoss();
+				break;
 		}
 	}
 	
 	/**
 	 * We need a head start to win... Go, go, GO!
 	 */
-	public static void start() {
-		
+	public static void start() {	
 		Delay.msDelay(2000);
 		robot.arm.rotateTo(robot.arm.getLeftMaxAngle(), true);
 		Delay.msDelay(2000);
@@ -170,7 +140,6 @@ public class MainControl {
 	 * Oh yeah... There could be other robots in the way...
 	 */
 	public static void race(boolean leftWall) {	
-		//We start 
 		
 		//We use our labyrinth algorithm to pass this
 		Strategy wall = new WallFollower(robot, leftWall,

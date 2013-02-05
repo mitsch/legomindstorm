@@ -30,7 +30,10 @@ public class EnterBox extends StrategyBehavior {
 		int leftPreDistance = robot.sonar.getDistance();
 		robot.arm.alignRight();
 		int rightPreDistance = robot.sonar.getDistance();
-		
+	
+		if (leftPreDistance > 30 || rightPreDistance > 30)
+			return;
+	
 		if (leftPreDistance < rightPreDistance) {
 			robot.pilot.steer(-200.0, java.lang.Math.cos((double)(leftPreDistance + rightPreDistance - 2 * leftPreDistance)/48.0));
 		} else if (rightPreDistance < leftPreDistance) {
@@ -40,26 +43,41 @@ public class EnterBox extends StrategyBehavior {
 		robot.pilot.forward();
 		while (!suppressed && !robot.leftTouch.isPressed() && !robot.rightTouch.isPressed());
 		robot.pilot.stop();
-		robot.pilot.travel(-5);
-		robot.pilot.steer(200, 180);
-		robot.arm.alignCenter();
-		if (robot.sonar.getDistance() == 255) {
-			TableTurner.client.turnClockwise(30);
-			robot.pilot.setTravelSpeed(4);
-			robot.pilot.forward();
-			while (!suppressed && robot.sonar.getDistance() > 3);
-			robot.pilot.stop();
+		robot.pilot.travel(-12);
+
+		robot.arm.alignLeft();
+		robot.pilot.steer(200);
+		int state = 0;
+		while (state != 2 && !suppressed) {
+			int distance = robot.sonar.getDistance();
+			if (state == 0 && distance > 100) state = 1;
+			else if (state == 1 && distance < 20) {
+				robot.pilot.stop();
+				robot.arm.alignRight();
+				if (robot.sonar.getDistance() < 20)
+					state = 2;
+				else {
+					robot.arm.alignLeft();
+					robot.pilot.steer(200);
+				}
+			}
+		}
+		robot.pilot.stop();
+		robot.arm.alignLeft();
+
+		TableTurner.client.turnClockwise(-180);
+		lejos.util.Delay.msDelay(2000);	
+
+		state = 0;
+		while (state != 2 && !suppressed) {
+			int distance = robot.sonar.getDistance();
+			if (state == 0 && distance > 100) state = 1;
+			else if (state == 1 && distance < 40) state = 2;
+		}
 			
-			robot.pilot.setTravelSpeed(robot.pilot.getMaxTravelSpeed());
-			TableTurner.client.turnClockwise(60);
-			while (!suppressed && !robot.isLineBeneath() && robot.sonar.getDistance() != 255);
-			robot.pilot.forward();
-			passedBox = true;
-		}
-		else {
-			robot.pilot.travel(10.0);
-			robot.pilot.travel(-10.0);
-			parent.stop();
-		}
+		robot.pilot.forward();
+		robot.arm.alignCenter();
+		passedBox = true;
+		TableTurner.client.disconnectFromTurntable();
 	}
 }

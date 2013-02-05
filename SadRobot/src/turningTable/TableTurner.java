@@ -6,6 +6,7 @@ import lineFollowing.FollowLine;
 import lineFollowing.FindLine;
 import turningTable.EnterBox;
 import turningTable.WaitForBox;
+import common.gates.TurnControl;
 
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;

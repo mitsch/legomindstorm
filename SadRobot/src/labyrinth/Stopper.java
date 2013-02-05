@@ -3,7 +3,6 @@ package labyrinth;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
-import common.color.Color;
 import labyrinth.WallFollower.AbortCondition;
 
 public class Stopper extends StrategyBehavior {
@@ -27,6 +26,8 @@ public class Stopper extends StrategyBehavior {
 			return isColorBeneath();
 		case TIME:
 			return System.currentTimeMillis() - WallFollower.started > WallFollower.time;
+		case GAP:
+			return robot.sonar.getDistance() > 50;
 		}
 		return false;
 	}

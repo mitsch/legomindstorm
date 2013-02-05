@@ -2,6 +2,7 @@ import bridgePasser.BridgeStrategy;
 import labyrinth.WallFollower;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
+import lejos.nxt.Sound;
 import lejos.util.Delay;
 import lineFollowing.LineFollower;
 import common.Robot;
@@ -201,6 +202,8 @@ public class MainControl {
 		Strategy bridge = new BridgeStrategy(robot, false);	
 		bridge.start();	
 		
+		robot.pilot.travel(15);
+		
 		analyzeLines();
 		
 		labyrinth();
@@ -211,6 +214,8 @@ public class MainControl {
 	 * the left or right wall and hope we end up somewhere.
 	 */
 	public static void labyrinth() {
+		
+		Sound.beepSequenceUp();
 		
 		robot.pilot.travel(10);
 		
@@ -259,15 +264,15 @@ public class MainControl {
 		GateControl gateControl = new GateControl();
 		while (!gateControl.connectionToGateSuccessful());	
 		gateControl.openGate();
+		gateControl.disconnectFromGate();
 		while (robot.sonar.getDistance() < 20);
 		
 		//navigate through it until you find a line
-		robot.pilot.forward();	
-		while (!robot.isLineBeneath());
+		WallFollower wall = new WallFollower(robot, false,
+				WallFollower.BumpResult.NONE, WallFollower.AbortCondition.GAP);
+		wall.start();
 		
-		analyzeLines();
-		
-		gateControl.disconnectFromGate();
+		analyzeLines();	
 		
 		turnTable();
 	}
@@ -429,10 +434,13 @@ public class MainControl {
 		
 		//ask the bluetooth gate for a color
 		ColorGateControl gateControl = new ColorGateControl();
+		Sound.beep();
 		while (!gateControl.connectionToColorGateSuccessful());
+		Sound.beep();
 		
 		//wait for the answer
 		int i = gateControl.readColor();
+		Sound.beepSequenceUp();
 		
 		Color color;
 		if (i==0) {
@@ -445,6 +453,8 @@ public class MainControl {
 			//we are looking for green
 			color = Color.RED;
 		}
+		
+		robot.pilot.travel(20);
 		
 		Strategy line = new LineFollower(robot,
 				LineFollower.AbortCondition.COLOR);

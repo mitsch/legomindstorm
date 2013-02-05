@@ -16,7 +16,7 @@ import common.color.Color;
  */
 public class WallFollower extends Strategy {	
 	public enum BumpResult {TURN, EVADE, HALT, HALT_AGGRESSIVE, NONE};
-	public enum AbortCondition {COLOR, LINE, WOOD, TIME};
+	public enum AbortCondition {COLOR, LINE, WOOD, TIME, GAP};
 	public static boolean sonarLeft = true;	
 	public static Color color;
 	public static int time;

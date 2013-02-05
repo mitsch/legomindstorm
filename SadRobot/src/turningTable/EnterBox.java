@@ -26,9 +26,9 @@ public class EnterBox extends StrategyBehavior {
 
 	@Override
 	public void work() {
-		robot.joker.rotateTo(robot.getLeftJoker());
+		robot.arm.alignLeft();
 		int leftPreDistance = robot.sonar.getDistance();
-		robot.joker.rotateTo(robot.getRightJoker());
+		robot.arm.alignRight();
 		int rightPreDistance = robot.sonar.getDistance();
 		
 		robot.pilot.forward();
@@ -36,9 +36,9 @@ public class EnterBox extends StrategyBehavior {
 		robot.pilot.stop();
 		robot.pilot.travel(-7);
 		robot.pilot.steer(200, 180);
-		robot.joker.rotateTo(robot.getMiddleJoker());
+		robot.arm.alignCenter();
 		if (robot.sonar.getDistance() == 255) {
-			robot.joker.rotateTo(robot.getLeftJoker());
+			robot.arm.alignLeft();
 			TableTurner.client.turnClockwise(45);
 			robot.pilot.setTravelSpeed(4);
 			robot.pilot.forward();

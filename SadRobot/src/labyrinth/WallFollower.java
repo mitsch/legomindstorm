@@ -28,7 +28,7 @@ public class WallFollower extends Strategy {
 	}
 	
 	public WallFollower(Robot robot, boolean sonarLeft, int time) {
-		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.TIME);
+		this(robot, sonarLeft, BumpResult.NONE, AbortCondition.TIME);
 		WallFollower.time = time;
 	}
 	

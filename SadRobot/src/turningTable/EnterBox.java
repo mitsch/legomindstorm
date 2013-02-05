@@ -26,27 +26,32 @@ public class EnterBox extends StrategyBehavior {
 
 	@Override
 	public void work() {
-		robot.joker.rotateTo(robot.getLeftJoker());
+		robot.arm.alignLeft();
 		int leftPreDistance = robot.sonar.getDistance();
-		robot.joker.rotateTo(robot.getRightJoker());
+		robot.arm.alignRight();
 		int rightPreDistance = robot.sonar.getDistance();
 		
+		if (leftPreDistance < rightPreDistance) {
+			robot.pilot.steer(-200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * leftPreDistance)));
+		} else if (rightPreDistance < leftPreDistance) {
+			robot.pilot.steer(200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * rightPreDistance)));
+		}
+
 		robot.pilot.forward();
 		while (!suppressed && !robot.leftTouch.isPressed() && !robot.rightTouch.isPressed());
 		robot.pilot.stop();
-		robot.pilot.travel(-7);
+		robot.pilot.travel(-5);
 		robot.pilot.steer(200, 180);
-		robot.joker.rotateTo(robot.getMiddleJoker());
+		robot.arm.alignCenter();
 		if (robot.sonar.getDistance() == 255) {
-			robot.joker.rotateTo(robot.getLeftJoker());
-			TableTurner.client.turnClockwise(45);
+			TableTurner.client.turnClockwise(30);
 			robot.pilot.setTravelSpeed(4);
 			robot.pilot.forward();
-			while (!suppressed && robot.sonar.getDistance() > );
+			while (!suppressed && robot.sonar.getDistance() > 3);
 			robot.pilot.stop();
 			
 			robot.pilot.setTravelSpeed(robot.pilot.getMaxTravelSpeed());
-			TableTurner.client.turnClockwise(45);
+			TableTurner.client.turnClockwise(60);
 			while (!suppressed && !robot.isLineBeneath() && robot.sonar.getDistance() != 255);
 			robot.pilot.forward();
 			passedBox = true;

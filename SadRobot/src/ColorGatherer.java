@@ -1,12 +1,9 @@
-
-import lejos.nxt.ADSensorPort;
 import lejos.nxt.Button;
+import lejos.nxt.ButtonListener;
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
-import lejos.nxt.TouchSensor;
-import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.util.Delay;
 
@@ -17,11 +14,17 @@ public class ColorGatherer {
 	public NXTRegulatedMotor leftMotor, rightMotor;
 
 	public DifferentialPilot pilot;
+	
+	private boolean emergency = false;
+	
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
+		System.out.println("ColorGatherer");
+
 		(new ColorGatherer()).run();
 
 	}
@@ -30,42 +33,84 @@ public class ColorGatherer {
 		super();
 		this.leftMotor = Motor.C;
 		this.rightMotor = Motor.A;
-			
+
 		this.light = new LightSensor(SensorPort.S2);
 
 		this.pilot = new DifferentialPilot(3.3f, 21.0f, leftMotor, rightMotor);
-
+		
+		ButtonListener bl = new ButtonListener() {
+			
+			@Override
+			public void buttonReleased(Button b) {
+					
+			}
+			
+			@Override
+			public void buttonPressed(Button b) {
+				emergency = true;
+			}
+		};
+		
+		Button.ESCAPE.addButtonListener(bl);
+		
 	}
 
 	private void run() {
-				
-		System.out.println("GO!");
-	
+
+		String csv;
 		
-		int[] values = new int[100];
-		
+		while (!emergency) {
+			
+			System.out.println("Enter = new Gathering");
+			
+			// Waiting ;)
+			while (Button.readButtons() == Button.ID_ENTER) {
+
+			}
+			
+			System.out.println("-----------------------");
+			
+			int[] values = this.gather(512);
+			csv = ColorGatherer.toCSV(values);
+
+			System.out.println(csv);
+			
+			System.out.println("-----------------------");
+			
+						
+		}
+
+		//return;
+	}
+
+	private int[] gather(int cntSamples) {
+
+		int[] values = new int[1023];
+
 		int cnt = 0;
-		
-		pilot.forward();
-		
-		while (cnt<500) {
-			
-			values[this.light.getLightValue()]++;
-			
+
+		while (cnt < cntSamples) {
+
+			values[this.light.readNormalizedValue()]++;
+
 			Delay.msDelay(10);
 			cnt++;
 		}
-		
-		pilot.stop();
-		
-		String csv = "";
-		
-		for (int i = 0; i < values.length; i++) {
-			csv+= values[i] +" ";
-		}
-		
-		System.out.println(csv);
-		
-		return;
+
+		return values;
+
 	}
+
+	private static String toCSV(int[] values) {
+
+		String csv = "";
+
+		for (int i = 0; i < values.length; i++) {
+			csv += values[i] + ";";
+		}
+
+		return csv;
+
+	}
+
 }

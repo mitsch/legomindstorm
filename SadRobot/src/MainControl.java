@@ -306,7 +306,7 @@ public class MainControl {
 	public static void bluetoothGate() {
 			
 		//drive up to the gate		
-		robot.arm.alignMiddle();
+		robot.arm.alignCenter();
 		robot.pilot.forward();
 		while (!aborted && robot.sonar.getDistance() > 20);
 		robot.pilot.stop();
@@ -405,7 +405,7 @@ public class MainControl {
 		if (aborted) return;
 		
 		//drive forward until we see the pusher (or accidently passed it)
-		robot.arm.alignMiddle();
+		robot.arm.alignCenter();
 		robot.pilot.travel(10, true);
 		while (!aborted && robot.pilot.isMoving());
 		

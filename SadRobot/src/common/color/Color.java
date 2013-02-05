@@ -1,7 +1,7 @@
 package common.color;
 
 /**
- * Colors in Parcour.
+ * Colors in Parcour. Uses ormalized raw value (0 to 1023)!
  * @author HM42
  *
  */

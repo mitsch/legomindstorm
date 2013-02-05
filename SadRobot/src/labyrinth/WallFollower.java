@@ -16,10 +16,11 @@ import common.color.Color;
  */
 public class WallFollower extends Strategy {	
 	public enum BumpResult {TURN, EVADE, HALT, HALT_AGGRESSIVE, NONE};
-	public enum AbortCondition {DARK, COLOR, LINE, WOOD};
+	public enum AbortCondition {COLOR, LINE, WOOD, TIME};
 	public static boolean sonarLeft = true;	
 	public static boolean enteredBog = false;
 	public static Color color;
+	public static long started;
 	
 	public WallFollower(Robot robot, boolean sonarLeft, Color color) {
 		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.COLOR);
@@ -38,7 +39,7 @@ public class WallFollower extends Strategy {
 		//Prepare behaviors
 		Behavior driveAlongWall = new Drive(robot, this);
 		Behavior bumper = new Bumper(robot, bump, this);
-		Behavior lineRec = new RecognizeLine(robot, abort, this);
+		Behavior stop = new Stopper(robot, abort, this);
 		
 		Behavior[] behaviors;
 		if (bump == BumpResult.HALT || bump == BumpResult.HALT_AGGRESSIVE) {
@@ -49,7 +50,7 @@ public class WallFollower extends Strategy {
 			behaviors = new Behavior[3];
 			behaviors[0] = driveAlongWall;
 			behaviors[1] = bumper;
-			behaviors[2] = lineRec;
+			behaviors[2] = stop;
 		}
 		
 		//Load the behaviors into an arbitrator
@@ -59,5 +60,11 @@ public class WallFollower extends Strategy {
 			robot.arm.alignLeft();
 		else
 			robot.arm.alignRight();
+	}
+	
+	@Override
+	public void start() {
+		started = System.currentTimeMillis();
+		super.start();
 	}
 }

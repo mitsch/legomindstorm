@@ -1,18 +1,14 @@
-import plankBridge.PlankBridgePasser;
 import bridgePasser.BridgeStrategy;
 import labyrinth.WallFollower;
 import lejos.nxt.Button;
 import lejos.nxt.ButtonListener;
-import lejos.nxt.Sound;
 import lejos.util.Delay;
 import lineFollowing.LineFollower;
 import common.Robot;
 import common.Strategy;
 import common.color.Color;
 import common.gates.ColorGateControl;
-import common.gates.GateCommon;
 import common.gates.GateControl;
-import foamBog.FoamBogStrategy;
 
 public class MainControl {
 	public enum Mode {WAIT_FOR_BARCODE, WAIT_FOR_RACE, RUNNING};
@@ -97,7 +93,7 @@ public class MainControl {
 		//now we count them
 		while (robot.isLineBeneath()) {
 			lineCount++;
-			robot.pilot.travel(15, true);
+			robot.pilot.travel(8, true);
 			//we have to leave the current line, cross the void, and enter the
 			//next line
 			while (robot.pilot.isMoving() && robot.isLineBeneath()) {
@@ -234,7 +230,7 @@ public class MainControl {
 		
 		if (aborted) return;
 		
-		currentStrategy = new BridgeStrategy(robot, false);	
+		currentStrategy = new BridgeStrategy(robot, true);	
 		currentStrategy.start();	
 		
 		if (aborted) return;
@@ -278,10 +274,16 @@ public class MainControl {
 		
 		//We could also simply use the labyrinth strategy
 		currentStrategy = new WallFollower(robot, true,
-				WallFollower.BumpResult.NONE);
+				WallFollower.BumpResult.NONE,
+				WallFollower.AbortCondition.TIME);
 		currentStrategy.start();
 		
 		if (aborted) return;
+		
+		robot.pilot.forward();
+		while (!aborted && robot.isLineBeneath());
+		
+		Delay.msDelay(100);
 		
 		if (analyzeLines() == -1) return;
 		
@@ -295,19 +297,32 @@ public class MainControl {
 			
 		//drive up to the gate		
 		robot.arm.alignMiddle();
-		while (robot.sonar.getDistance() > 20) {
-			if (aborted) return;
-		}
+		robot.pilot.forward();
+		while (!aborted && robot.sonar.getDistance() > 20);
+		robot.pilot.stop();
+		
+		if (aborted) return;
 		
 		//connect and open
+		System.out.println("Now opening the gate");
 		GateControl gateControl = new GateControl();
 		while (!aborted && 
-				!gateControl.connectionToGateSuccessful(GateCommon.GATE_1)) {
-			if (aborted) return;
-		}
+				!gateControl.connectionToGateSuccessful());
+		if (aborted) return;
+		
+		gateControl.openGate();
+		while (!aborted && robot.sonar.getDistance() < 20);
+		
+		if (aborted) return;
 		
 		//navigate through it until you find a line
 		robot.pilot.forward();	
+		while (!robot.isLineBeneath());
+		
+		if (analyzeLines() == -1)
+			return;
+		
+		gateControl.disconnectFromGate();
 		
 		turnTable();
 	}
@@ -372,17 +387,39 @@ public class MainControl {
 		
 		if (aborted) return;
 		
+		currentStrategy = new WallFollower(robot, false,
+				WallFollower.BumpResult.NONE,
+				WallFollower.AbortCondition.TIME);
+		currentStrategy.start();
+		
+		if (aborted) return;
+		
 		//drive forward until we see the pusher (or accidently passed it)
 		robot.arm.alignMiddle();
-		robot.pilot.forward();
-		while (!aborted && !(robot.sonar.getDistance() < 10) 
-				&& !robot.isLineBeneath());
+		robot.pilot.travel(10, true);
+		while (!aborted && robot.pilot.isMoving());
 		
 		if (aborted) return;
 		
 		//wait until it is free
 		robot.pilot.stop();
-		while (!aborted && robot.sonar.getDistance() < 10);
+		while (!aborted && robot.sonar.getDistance() > 50);
+		Delay.msDelay(100);
+		while (!aborted && robot.sonar.getDistance() < 50);
+		
+		if (aborted) return;
+		
+		robot.pilot.forward();
+		
+		currentStrategy = new WallFollower(robot, false,
+			WallFollower.BumpResult.NONE,
+			WallFollower.AbortCondition.TIME);
+		currentStrategy.start();	
+
+		if (aborted) return;
+		
+		robot.pilot.forward();
+		while (!aborted && !robot.isLineBeneath());
 		
 		if (aborted) return;
 		
@@ -488,7 +525,7 @@ public class MainControl {
 		//ask the bluetooth gate for a color
 		ColorGateControl gateControl = new ColorGateControl();
 		while (!aborted && 
-				!gateControl.connectionToGate2Successful()) {
+				!gateControl.connectionToColorGateSuccessful()) {
 			if (aborted)
 				return;
 		}
@@ -501,14 +538,20 @@ public class MainControl {
 		Color color;
 		if (i==0) {
 			//we are looking for red
-			color = Color.RED;
+			color = Color.GREEN;
 		} else if (i==1) {
 			//we are looking for yellow
 			color = Color.YELLOW;
 		} else {
 			//we are looking for green
-			color = Color.GREEN;
+			color = Color.RED;
 		}
+		
+		currentStrategy = new LineFollower(robot,
+				LineFollower.AbortCondition.COLOR);
+		currentStrategy.start();
+		
+		if (aborted) return;
 		
 		currentStrategy = new WallFollower(robot, true, color);
 		currentStrategy.start();

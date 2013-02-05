@@ -10,7 +10,6 @@ public class FindColor extends StrategyBehavior {
 	public FindColor(Robot robot, Strategy parent) {
 		super(parent);
 		this.robot = robot;
-		this.suppressed = false;
 	}
 	
 	@Override

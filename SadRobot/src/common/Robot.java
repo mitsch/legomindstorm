@@ -50,7 +50,7 @@ public class Robot {
 	}	
 	
 	public boolean isLineBeneath() {
-		return light.readValue() > 38;
+		return light.readValue() > 40;
 	}
 	
 	public boolean isWoodBeneath() {

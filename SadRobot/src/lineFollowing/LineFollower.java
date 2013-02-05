@@ -14,7 +14,7 @@ import common.Strategy;
  *
  */
 public class LineFollower extends Strategy {
-	public enum AbortCondition {OBSTACLE, WOOD, END_OF_THE_LINE};
+	public enum AbortCondition {OBSTACLE, WOOD, END_OF_THE_LINE, COLOR};
 	public enum Mode {FOLLOW_LINE, AVOID_OBSTACLE};
 	public static int lineCurvature = 0;
 	public static long started;
@@ -51,6 +51,10 @@ public class LineFollower extends Strategy {
 			break;
 		case WOOD:
 			behaviors[2] = new WoodDetector(robot, this);
+			filled++;
+			break;
+		case COLOR:
+			behaviors[2] = new ColorDetector(robot, this);
 			filled++;
 			break;
 		case END_OF_THE_LINE:

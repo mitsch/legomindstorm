@@ -1,4 +1,5 @@
 package common.gates;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -29,16 +30,16 @@ public class GateControl {
 	 * @param gateID the gate you want to control, see the GateCommon.GATE_* constants
 	 * @return true if the connection to the gate was successful, false otherwise (brick not found, connection failed, ...)
 	 */
-	public boolean connectionToGateSuccessful(int gateID) {
-		connectedGate = gateID;
+	public boolean connectionToGateSuccessful() {
+		connectedGate = 2;
+//		
+//		String gateBrickName;
+//		if (gateID == GateCommon.GATE_1)
+//			gateBrickName = GateCommon.GATE1_BRICK_NAME;
+//		else
+//			gateBrickName = GateCommon.GATE23_BRICK_NAME;
 		
-		String gateBrickName;
-		if (gateID == GateCommon.GATE_1)
-			gateBrickName = GateCommon.GATE1_BRICK_NAME;
-		else
-			gateBrickName = GateCommon.GATE23_BRICK_NAME;
-		
-		remoteDevice = Bluetooth.getKnownDevice(gateBrickName);
+		remoteDevice = Bluetooth.getKnownDevice(Variables.GATE_BRICK_NAME);
 		if (remoteDevice == null)
 			return false;
 
@@ -58,7 +59,7 @@ public class GateControl {
 	 * @return true if the command to close the connection was sent, false otherwise
 	 */
 	public boolean disconnectFromGate() {
-		boolean successful = sendCommand(GateCommon.COMMAND_CLOSE_CONNECTION);
+		boolean successful = sendCommand(Variables.COMMAND_CLOSE_CONNECTION);
 		if (successful)
 			connection.close();
 		return successful;

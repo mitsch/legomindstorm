@@ -8,14 +8,12 @@ import common.Robot;
 public class ColorFinder extends StrategyBehavior  {
 	private Robot robot;
 	private boolean lastHeadingLeft;
-	private boolean detectEndOfLine;
 	
 
-	public ColorFinder(Robot robot, Strategy parent, boolean detectEndOfLine){
+	public ColorFinder(Robot robot, Strategy parent){
 		super(parent);
 		this.robot = robot;
 		this.lastHeadingLeft = true;
-		this.detectEndOfLine = detectEndOfLine;
 	}
 
 	
@@ -37,18 +35,7 @@ public class ColorFinder extends StrategyBehavior  {
 
 		while (!suppressed && !robot.isLineBeneath()) {
 			//if we would rotate too far
-			//TODO: react to end of line
 			if (turn >= 130) {
-				robot.pilot.rotate(-currentHeading);
-				if (!suppressed) {
-					robot.pilot.travel(15);
-					while (!suppressed && robot.pilot.isMoving());
-					robot.pilot.stop();
-					
-					if (detectEndOfLine) {
-						parent.stop();
-					}
-				}
 				break;
 			} else {
 				for (int i=0; i<2 && !suppressed && !robot.isLineBeneath(); i++) {	

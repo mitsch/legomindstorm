@@ -28,20 +28,20 @@ public class ColorGateControl {
 	 * 
 	 * @return true if the connection to the gate was successful, false otherwise (brick not found, connection failed, ...)
 	 */
-	public boolean connectionToGate2Successful() {
+	public boolean connectionToColorGateSuccessful() {
 		
-		remoteDevice = Bluetooth.getKnownDevice(Variables.GATE1_BRICK_NAME);
+		remoteDevice = Bluetooth.getKnownDevice(Variables.COLOR_GATE_BRICK_NAME);
 		if (remoteDevice == null) {
-			System.out.println("Device not found.");
+//			System.out.println("Device not found.");
 			return false;
 		}
 
 		connection = Bluetooth.connect(remoteDevice);
 		if (connection == null) {
-			System.out.println("Connection failed.");
+//			System.out.println("Connection failed.");
 			return false;
 		}
-		System.out.println("Connected.");
+//		System.out.println("Connected.");
 		
 		inputStream = connection.openDataInputStream();
 		outputStream = connection.openDataOutputStream();
@@ -76,17 +76,17 @@ public class ColorGateControl {
 	/**
 	 * Reads the Color ID sent by the Gate.
 	 * 
-	 * @return the Color ID, 0 for errors
+	 * @return the Color ID, -1 for errors
 	 */
 	public int readColor() {
 		try {
 			int i = inputStream.readInt();
-			System.out.println("Color ID: " + i);
+//			System.out.println("Color ID: " + i);
 			return i;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
 		// error
-		return 0;
+		return -1;
 	}
 }

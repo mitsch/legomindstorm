@@ -19,7 +19,7 @@ public class GateTester {
 	}
 	
 	public static void openGate(Robot robot) {
-		robot.alignLightMiddle();
+		robot.arm.alignMiddle();
 		robot.pilot.forward();
 		while (robot.sonar.getDistance() > 20);
 		robot.pilot.stop();

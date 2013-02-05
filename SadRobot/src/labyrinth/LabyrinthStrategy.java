@@ -31,8 +31,8 @@ public class LabyrinthStrategy extends Strategy {
 		arbitrator = new Arbitrator(behaviors, true);
 		
 		if (sonarLeft)
-			robot.alignLightLeft();
+			robot.arm.alignLeft();
 		else
-			robot.alignLightRight();
+			robot.arm.alignRight();
 	}
 }

@@ -1,15 +1,16 @@
 /**
  * 
  */
-package gate1;
+package bluetoothGate;
 
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 import lineFollowing.FindLine;
 import lineFollowing.FollowLine;
+import lineFollowing.LineFollower.AbortCondition;
 import lineFollowing.ObstacleDetector;
 import lineFollowing.WoodDetector;
-import lineFollowing.LineFollower.AbortCondition;
+
 import common.Robot;
 import common.Strategy;
 
@@ -17,15 +18,19 @@ import common.Strategy;
  * @author Admin
  *
  */
-public class Gate1 extends Strategy {
+public class BluetoothGateStrategy extends Strategy {
 	
 	Arbitrator arbitrator;
 	
 	
-	
-	public Gate1(Robot robot, AbortCondition abort) {
+	public BluetoothGateStrategy(Robot robot, AbortCondition abort) {
 		
-				
+
+		Behavior openGateBehavior = new OpenGateBehavior(this);
+		
+		
+		
+		
 		Behavior followLine = new FollowLine(robot, this);
 		
 		Behavior findLine = new FindLine(robot,
@@ -57,6 +62,31 @@ public class Gate1 extends Strategy {
 		
 	}
 	
-	
+	/**
+	 * Open sesame! This gate should open if we ask it nicely per BlueTooth.
+	 */
+//	public static void bluetoothGate() {
+//		robot.sonar.continuous();
+//			
+//		//drive up to the gate		
+//		robot.alignLightMiddle();
+//		while (robot.sonar.getDistance() > 20) {
+//			if (aborted)
+//				return;
+//		}
+//		
+//		//connect and open
+//		GateControl gateControl = new GateControl();
+//		while (!aborted && 
+//				!gateControl.connectionToGateSuccessful(GateCommon.GATE_1)) {
+//			if (aborted)
+//				return;
+//		}
+//		
+//		//navigate through it until you find a line
+//		robot.pilot.forward();	
+//		
+//		turnTable();
+//	}
 		
 }

@@ -18,8 +18,11 @@ public class BridgeStrategy  extends Strategy {
 		arbitrator = new Arbitrator(behaviors, true);
 		
 		if (leftBridge)
-			robot.alignLightRight();
+			
+			robot.arm.alignRight();
+			
 		else
-			robot.alignLightLeft();
+			
+			robot.arm.alignLeft();
 	}
 }

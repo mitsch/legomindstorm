@@ -19,7 +19,7 @@ public class ObstacleDetector extends StrategyBehavior {
 	
 	@Override
 	protected boolean wantsToWork() {
-		return robot.sonar.getDistance() < 20;
+		return robot.sonar.getDistance() < 40;
 	}
 
 	@Override

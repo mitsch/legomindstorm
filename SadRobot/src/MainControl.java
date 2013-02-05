@@ -1,3 +1,4 @@
+import turningTable.TableTurner;
 import bridgePasser.BridgeStrategy;
 import labyrinth.WallFollower;
 import lejos.nxt.Button;
@@ -252,11 +253,9 @@ public class MainControl {
 	 * Open sesame! This gate should open if we ask it nicely per BlueTooth.
 	 */
 	public static void bluetoothGate() {
-			
 		//drive up to the gate		
-		robot.arm.alignCenter();
-		robot.pilot.forward();
-		while (robot.sonar.getDistance() > 20);
+		WallFollower wall = new WallFollower(robot, true, 1000);
+		wall.start();
 		robot.pilot.stop();
 			
 		//connect and open
@@ -268,8 +267,8 @@ public class MainControl {
 		while (robot.sonar.getDistance() < 20);
 		
 		//navigate through it until you find a line
-		WallFollower wall = new WallFollower(robot, false,
-				WallFollower.BumpResult.NONE, WallFollower.AbortCondition.GAP);
+		wall = new WallFollower(robot, true,
+				WallFollower.BumpResult.TURN, 1000);
 		wall.start();
 		
 		analyzeLines();	
@@ -288,22 +287,15 @@ public class MainControl {
 		
 		robot.pilot.travel(20);
 		
-		//follow line until the sonar registers an obstacle
-		Strategy line = new LineFollower(robot,
-				LineFollower.AbortCondition.OBSTACLE);
-		line.start();
-		
-		//ask the bluetooth to enter the table
-		
-		//navigate into the table
-		
-		//rotate 4*45° (Hopefully, we end up right
-		//alternatively: rotate yourself 180°
+		Strategy tableTurn = new TableTurner(robot);		
+		tableTurn.start();
 		
 		//find a line and follow it until we see wood
 		Strategy line2 = new LineFollower(robot,
 				LineFollower.AbortCondition.END_OF_THE_LINE);
 		line2.start();
+		
+		analyzeLines();
 		
 		pusher();
 	}
@@ -319,6 +311,8 @@ public class MainControl {
 		Strategy wall = new WallFollower(robot, false,
 				WallFollower.BumpResult.HALT);
 		wall.start();
+		wall = new WallFollower(robot, false,
+				WallFollower.BumpResult.HALT);
 		wall.start();
 		
 		//drive backwards to the button
@@ -339,7 +333,7 @@ public class MainControl {
 		
 		robot.pilot.forward();
 		
-		Strategy timeWall2 = new WallFollower(robot, false, 5000);
+		Strategy timeWall2 = new WallFollower(robot, false, 3000);
 		timeWall2.start();	
 
 		robot.pilot.forward();
@@ -434,13 +428,14 @@ public class MainControl {
 		
 		//ask the bluetooth gate for a color
 		ColorGateControl gateControl = new ColorGateControl();
-		Sound.beep();
+		System.out.println("Trying to establish connection...");
 		while (!gateControl.connectionToColorGateSuccessful());
-		Sound.beep();
+		System.out.println("Connection established");
 		
 		//wait for the answer
 		int i = gateControl.readColor();
-		Sound.beepSequenceUp();
+		System.out.println("Got color " + i);
+		gateControl.disconnectFromGate();
 		
 		Color color;
 		if (i==0) {
@@ -457,7 +452,7 @@ public class MainControl {
 		robot.pilot.travel(20);
 		
 		Strategy line = new LineFollower(robot,
-				LineFollower.AbortCondition.COLOR);
+				LineFollower.AbortCondition.OBSTACLE);
 		line.start();
 		
 		Strategy wall = new WallFollower(robot, true, color);

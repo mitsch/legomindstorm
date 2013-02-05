@@ -3,7 +3,6 @@ package bridgePasser;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
-import common.color.Color;
 
 /**
  * If we don't see ground below, we turn away.

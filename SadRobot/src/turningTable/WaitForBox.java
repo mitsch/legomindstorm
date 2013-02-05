@@ -6,9 +6,6 @@ import common.StrategyBehavior;
 
 import turningTable.TableTurner;
 
-import lejos.robotics.subsumption.Behavior;
-import lejos.robotics.subsumption.Arbitrator;
-
 public class WaitForBox extends StrategyBehavior {
 	private Robot robot;
 	private boolean connectionEstablished;

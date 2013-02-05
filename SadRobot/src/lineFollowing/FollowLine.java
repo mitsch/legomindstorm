@@ -3,7 +3,6 @@ package lineFollowing;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
-import common.color.Color;
 
 public class FollowLine extends StrategyBehavior {
 	private Robot robot;

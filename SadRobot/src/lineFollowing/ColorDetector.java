@@ -6,6 +6,7 @@ import common.StrategyBehavior;
 
 public class ColorDetector extends StrategyBehavior {
 	private Robot robot;
+	private boolean justExecuted;
 	
 	public ColorDetector(Robot robot, Strategy parent) {
 		super(parent);
@@ -14,7 +15,7 @@ public class ColorDetector extends StrategyBehavior {
 
 	@Override
 	protected boolean wantsToWork() {
-		return robot.light.readNormalizedValue() < 507
+		return !justExecuted && robot.light.readNormalizedValue() < 507
 				&& robot.light.readNormalizedValue() > 350;
 	}
 

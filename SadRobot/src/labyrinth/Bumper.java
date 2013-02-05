@@ -1,6 +1,5 @@
 package labyrinth;
 
-import testing.SonarTester;
 import labyrinth.WallFollower.BumpResult;
 import common.Robot;
 import common.Strategy;

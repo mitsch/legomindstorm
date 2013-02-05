@@ -2,7 +2,6 @@ package lineFollowing;
 
 import lejos.robotics.subsumption.Behavior;
 
-import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
 

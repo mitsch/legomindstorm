@@ -1,6 +1,5 @@
 package lineFollowing;
 
-import labyrinth.WallFollower;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;

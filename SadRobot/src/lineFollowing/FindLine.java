@@ -3,8 +3,6 @@ package lineFollowing;
 import common.Robot;
 import common.Strategy;
 import common.StrategyBehavior;
-import common.color.Color;
-import common.color.ColorOracle;
 
 public class FindLine extends StrategyBehavior {
 	private Robot robot;

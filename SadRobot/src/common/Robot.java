@@ -1,8 +1,5 @@
 package common;
 
-import common.color.Color;
-import common.color.ColorOracle.Strength;
-
 import lejos.nxt.LightSensor;
 import lejos.nxt.Motor;
 import lejos.nxt.MotorPort;
@@ -39,6 +36,7 @@ public class Robot {
 		leftTouch = new TouchSensor(SensorPort.S4);
 		rightTouch = new TouchSensor(SensorPort.S1);
 		sonar = new UltrasonicSensor(SensorPort.S3);
+		sonar.continuous();
 		light = new LightSensor(SensorPort.S2);
 		
 		// This is our new ColorSensor! It is used instead of the LightSensor.

@@ -27,9 +27,14 @@ public class WallFollower extends Strategy {
 		WallFollower.color = color;
 	}
 	
-	public WallFollower(Robot robot, boolean sonarLeft, int time) {
-		this(robot, sonarLeft, BumpResult.NONE, AbortCondition.TIME);
+	public WallFollower(Robot robot, boolean sonarLeft, BumpResult bump,
+			int time) {
+		this(robot, sonarLeft, bump, AbortCondition.TIME);
 		WallFollower.time = time;
+	}
+	
+	public WallFollower(Robot robot, boolean sonarLeft, int time) {
+		this(robot, sonarLeft, BumpResult.NONE, time);
 	}
 	
 	public WallFollower(Robot robot, boolean sonarLeft,

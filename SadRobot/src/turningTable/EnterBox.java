@@ -6,9 +6,6 @@ import common.StrategyBehavior;
 
 import turningTable.TableTurner;
 
-import lejos.robotics.subsumption.Behavior;
-import lejos.robotics.subsumption.Arbitrator;
-
 public class EnterBox extends StrategyBehavior {
 	private Robot robot;
 	private boolean passedBox;
@@ -37,7 +34,7 @@ public class EnterBox extends StrategyBehavior {
 		if (leftPreDistance < rightPreDistance) {
 			robot.pilot.steer(-200.0, java.lang.Math.cos((double)(leftPreDistance + rightPreDistance - 2 * leftPreDistance)/48.0));
 		} else if (rightPreDistance < leftPreDistance) {
-			robot.pilot.steer(200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * rightPreDistance)/48));
+			robot.pilot.steer(200.0, java.lang.Math.cos(0.5 * (double)(leftPreDistance + rightPreDistance - 2 * rightPreDistance)/48.0));
 		}
 
 		robot.pilot.forward();

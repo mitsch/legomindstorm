@@ -16,7 +16,7 @@ import common.color.Color;
  */
 public class WallFollower extends Strategy {	
 	public enum BumpResult {TURN, EVADE, HALT, HALT_AGGRESSIVE, NONE};
-	public enum AbortCondition {COLOR, LINE, WOOD, TIME};
+	public enum AbortCondition {COLOR, LINE, WOOD, TIME, GAP};
 	public static boolean sonarLeft = true;	
 	public static Color color;
 	public static int time;
@@ -28,7 +28,7 @@ public class WallFollower extends Strategy {
 	}
 	
 	public WallFollower(Robot robot, boolean sonarLeft, int time) {
-		this(robot, sonarLeft, BumpResult.EVADE, AbortCondition.TIME);
+		this(robot, sonarLeft, BumpResult.NONE, AbortCondition.TIME);
 		WallFollower.time = time;
 	}
 	

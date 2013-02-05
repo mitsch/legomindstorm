@@ -1,13 +1,9 @@
 package common;
 
 
-<<<<<<< HEAD
-=======
 import common.color.Color;
 import common.color.ColorOracle.Strength;
 
-import lejos.nxt.LightSensor;
->>>>>>> branch 'master' of ssh://git@github.com/mitsch/legomindstorm.git
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
@@ -15,7 +11,6 @@ import lejos.nxt.TouchSensor;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.navigation.DifferentialPilot;
 
-import common.color.Color;
 
 public class Robot {
 	public TouchSensor leftTouch, rightTouch;

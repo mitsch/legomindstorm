@@ -9,26 +9,26 @@ import turningTable.TableTurner;
 import lejos.robotics.subsumption.Behavior;
 import lejos.robotics.subsumption.Arbitrator;
 
-public class EnterBox extends StrategyBehavior {
+public class WaitForBox extends StrategyBehavior {
 	private Robot robot;
+	private boolean connectionEstablished;
 	
-	public EnterBox(Robot robot, Strategy parent) {
+	public WaitForBox(Robot robot, Strategy parent) {
 		super(parent);
 		this.robot = robot; 
+		this.connectionEstablished = false;
 	}
 
 	@Override
 	public boolean wantsToWork() {
-		return !TableTurner.passedBox && TableTurner.client.connectionToTurnTableSuccessful() && robot.sonar.getDistance() > 30;
+		return !connectionEstablished;
 	}
 
 	@Override
 	public void work() {
+		robot.pilot.stop();
+		while (!suppressed && !TableTurner.client.connectionToTurntableSuccessful());
+		connectionEstablished = true;
 		robot.pilot.forward();
-		while (robot.sonar.getDistance() > 6);
-		robot.joker.rotateTo(robot.getLeftJoker());
-		robot.pilot.steer(200, 180);
-		robot.joker.rotateTo(robot.getMiddleJoker());
-		parent.stop();
 	}
 }
